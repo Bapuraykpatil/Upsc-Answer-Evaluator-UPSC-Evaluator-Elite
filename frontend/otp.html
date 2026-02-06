@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify OTP · UPSC Evaluator</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    :root {
+      --bg: #f7f7fb;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #4f46e5;
+      --accent: #22c55e;
+      --border: #e2e8f0;
+      --shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+      --grad: radial-gradient(circle at top, rgba(79, 70, 229, 0.12), rgba(255,255,255,0));
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Inter", system-ui, -apple-system, sans-serif;
+      background-image: var(--grad);
+      background-attachment: fixed;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      box-shadow: 0 12px 24px rgba(79, 70, 229, 0.22);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center px-6 py-12">
+  <main class="card w-full max-w-md p-6 space-y-4">
+    <div class="flex items-center justify-between">
+      <h1 id="otpTitle" class="text-xl font-semibold">Verify OTP</h1>
+      <button id="otpBackBtn" class="text-sm text-slate-500">Back</button>
+    </div>
+    <p id="otpSubtitle" class="text-sm text-slate-500">
+      We sent a 6-digit OTP to your email. Enter it below to continue.
+    </p>
+    <div>
+      <label class="text-sm">OTP Code</label>
+      <input id="otpInput" type="text" inputmode="numeric" maxlength="6"
+        class="mt-2 w-full px-4 py-3 rounded-xl border" style="border-color: var(--border);"
+        placeholder="123456" />
+    </div>
+    <p id="otpMessage" class="text-sm text-red-500 hidden">Message</p>
+    <p id="otpStatus" class="text-xs text-slate-500"></p>
+    <div class="flex flex-col sm:flex-row gap-2 justify-end">
+      <button id="resendOtpBtn" class="px-4 py-2 rounded-full border" style="border-color: var(--border);">Resend OTP</button>
+      <button id="verifyOtpBtn" class="btn-primary px-5 py-2 rounded-full">Verify & Continue</button>
+    </div>
+    <p class="text-xs text-slate-500">Check your email (Inbox/Spam) for the 6-digit OTP.</p>
+  </main>
+
+  <script src="./js/app.js" defer></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const context = params.get("context") || localStorage.getItem("UPSC_OTP_CONTEXT") || "register";
+
+    const title = document.getElementById("otpTitle");
+    const subtitle = document.getElementById("otpSubtitle");
+    if (context === "reset") {
+      title.textContent = "Reset Password OTP";
+      subtitle.textContent = "We sent a 6-digit reset OTP to your email. Enter it below to set a new password.";
+    } else if (context === "login") {
+      title.textContent = "Verify Login OTP";
+      subtitle.textContent = "Enter the OTP sent to your email to complete login.";
+    }
+
+    const message = localStorage.getItem("UPSC_OTP_MESSAGE");
+    const devOtp = localStorage.getItem("UPSC_OTP_DEV");
+    const msgEl = document.getElementById("otpMessage");
+    if (message) {
+      msgEl.textContent = message;
+      msgEl.classList.remove("hidden");
+    }
+    if (devOtp) {
+      msgEl.textContent = `OTP (dev): ${devOtp}`;
+      msgEl.classList.remove("hidden");
+    }
+
+    if (typeof window.startOtpResendTimer === "function") {
+      window.startOtpResendTimer();
+    }
+
+    document.getElementById("otpBackBtn").addEventListener("click", () => {
+      window.location.href = "index2.html";
+    });
+
+    document.getElementById("verifyOtpBtn").addEventListener("click", () => {
+      if (typeof window.verifyOtp === "function") window.verifyOtp();
+    });
+    document.getElementById("resendOtpBtn").addEventListener("click", () => {
+      if (typeof window.resendOtp === "function") window.resendOtp();
+    });
+  </script>
+</body>
+</html>

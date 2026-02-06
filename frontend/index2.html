@@ -1,0 +1,3003 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#4f46e5" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <title>UPSC Evaluator Elite Command Center</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    :root {
+      --bg: #f7f7fb;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #4f46e5;
+      --primary-600: #4338ca;
+      --accent: #22c55e;
+      --border: #e2e8f0;
+      --shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+      --grad: radial-gradient(circle at top, rgba(79, 70, 229, 0.12), rgba(255,255,255,0));
+    }
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --card: #111827;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --primary: #818cf8;
+      --primary-600: #6366f1;
+      --accent: #34d399;
+      --border: #1f2937;
+      --shadow: 0 20px 40px rgba(0,0,0,0.35);
+      --grad: radial-gradient(circle at top, rgba(129, 140, 248, 0.14), rgba(15, 23, 42, 0));
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Inter", system-ui, -apple-system, sans-serif;
+      background-image: var(--grad);
+      background-attachment: fixed;
+      scroll-behavior: smooth;
+      -webkit-tap-highlight-color: transparent;
+      overflow-x: hidden;
+    }
+    img, svg, video {
+      max-width: 100%;
+      height: auto;
+    }
+    .mobile-shell {
+      margin: 0 auto;
+      width: 100%;
+      max-width: 520px;
+      padding-inline: 16px;
+    }
+    main {
+      width: 100%;
+    }
+    .hero-block {
+      text-align: left;
+    }
+    .section-divider {
+      border-top: 1px solid rgba(148, 163, 184, 0.16);
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.25);
+      border-radius: 999px;
+    }
+    .touch-card {
+      padding: 18px;
+      border-radius: 22px;
+    }
+    .smooth-shadow {
+      box-shadow: 0 18px 32px rgba(15, 23, 42, 0.08);
+    }
+    .safe-bottom {
+      padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+    @media (max-width: 768px) {
+      .card {
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+      }
+      .btn-primary,
+      button,
+      a {
+        touch-action: manipulation;
+      }
+      header {
+        backdrop-filter: blur(14px);
+      }
+      .header-quote {
+        font-size: 0.92rem;
+        max-width: 100%;
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+      main {
+        padding-bottom: 140px;
+      }
+      .quote-strip {
+        padding: 8px 10px;
+        gap: 6px;
+      }
+      .quote-strip .btn-primary {
+        font-size: 11px;
+        max-width: 84px;
+        width: 84px;
+      }
+      .quote-strip .quote-line {
+        max-width: calc(100% - 92px);
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+      .sheet {
+        height: 92vh;
+        padding: 20px 18px 28px;
+        border-radius: 24px 24px 0 0;
+      }
+      .sheet .grid {
+        grid-template-columns: 1fr !important;
+      }
+      .sheet button,
+      .sheet .btn-primary,
+      .sheet input,
+      .sheet textarea {
+        width: 100%;
+      }
+      .sheet .flex.items-center.justify-between {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      #uploadSheet .grid {
+        gap: 16px;
+      }
+      #examMode .flex.items-center.justify-between {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      #examMode .flex.items-center.gap-3 {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
+      #analysisPanel .card {
+        margin: 0 12px;
+        padding: 20px;
+        max-height: 88vh;
+        overflow-y: auto;
+      }
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card-soft {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(34, 197, 94, 0.08));
+      border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      box-shadow: 0 12px 24px rgba(79, 70, 229, 0.22);
+    }
+    .btn-primary:hover { filter: brightness(0.97); }
+    .glass {
+      background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.02));
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .quote-line {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .header-quote {
+      font-size: clamp(1rem, 2.2vw, 1.35rem);
+      display: block;
+      max-width: 100%;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .quote-line.block-quote {
+      white-space: normal;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .quote-strip {
+      background: linear-gradient(120deg, rgba(79, 70, 229, 0.12), rgba(34, 197, 94, 0.1));
+      border: 1px solid rgba(79, 70, 229, 0.2);
+      padding: 12px 14px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
+      min-width: 0;
+    }
+    @media (max-width: 768px) {
+      .quote-strip {
+        width: 100%;
+        max-width: 100%;
+      }
+      .quote-strip .quote-line {
+        min-width: 0;
+      }
+    }
+    .quote-strip .btn-primary {
+      max-width: 96px;
+      width: 96px;
+      padding: 8px 10px;
+    }
+    .quote-strip .quote-line {
+      flex: 1;
+      min-width: 0;
+      max-width: 100%;
+    }
+    .quote-strip button {
+      flex-shrink: 0;
+    }
+    .sheet {
+      transform: translateY(100%);
+      transition: transform 0.35s ease;
+    }
+    .sheet.open {
+      transform: translateY(0%);
+    }
+    .badge {
+      background: rgba(79, 70, 229, 0.12);
+      color: var(--primary);
+    }
+    .progress-track {
+      background: rgba(148, 163, 184, 0.2);
+    }
+    .progress-bar {
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    .toggle {
+      width: 48px;
+      height: 26px;
+      background: rgba(148, 163, 184, 0.4);
+      border-radius: 999px;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+    .toggle::after {
+      content: "";
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      border-radius: 999px;
+      background: white;
+      transition: all 0.2s ease;
+    }
+    .toggle.active {
+      background: var(--accent);
+    }
+    .toggle.active::after {
+      left: 25px;
+    }
+    .no-copy {
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: transparent;
+    }
+    .mobile-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 8px calc(14px + env(safe-area-inset-bottom));
+      z-index: 40;
+    }
+    .app-only {
+      display: none;
+    }
+    body.app-ready .app-only {
+      display: flex;
+    }
+    body.app-ready #sheetBackdrop,
+    body.app-ready .sheet,
+    body.app-ready #analysisPanel,
+    body.app-ready #examMode {
+      display: block;
+    }
+    .app-only.hidden {
+      display: none !important;
+    }
+    .mobile-nav a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .mobile-nav a span {
+      font-size: 18px;
+    }
+    .fab {
+      position: fixed;
+      right: 18px;
+      bottom: 86px;
+      z-index: 45;
+      background: linear-gradient(135deg, #6366f1, #22c55e);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 999px;
+      box-shadow: 0 16px 30px rgba(79, 70, 229, 0.35);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .fab::after {
+      content: "";
+      position: absolute;
+      inset: -6px;
+      border-radius: 999px;
+      border: 1px solid rgba(99, 102, 241, 0.25);
+    }
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--text);
+      background: var(--card);
+      width: 100%;
+    }
+    .action-btn.primary {
+      border: none;
+      color: white;
+      background: linear-gradient(135deg, #4f46e5, #22c55e);
+      box-shadow: 0 12px 24px rgba(79, 70, 229, 0.25);
+    }
+    .action-grid {
+      display: grid;
+      gap: 12px;
+    }
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+    .soft-pill {
+      background: rgba(79, 70, 229, 0.12);
+      color: var(--primary);
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 36px rgba(15, 23, 42, 0.12);
+    }
+    .selected-option {
+      background: rgba(79, 70, 229, 0.16);
+      border-color: var(--primary) !important;
+      color: var(--primary);
+      box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.15);
+    }
+    .bottom-sheet-action {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .bottom-sheet-action button,
+    .bottom-sheet-action a {
+      flex: 1 1 160px;
+    }
+    body.otp-only #auth,
+    body.otp-only #app {
+      display: none !important;
+    }
+    body.otp-only #otpModal {
+      display: flex !important;
+      background: var(--bg);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    #otpModal {
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+    }
+    #otpModal .card {
+      width: 100%;
+      max-width: 480px;
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+    @media (min-width: 768px) {
+      .mobile-nav {
+        display: none;
+      }
+      .fab {
+        bottom: 30px;
+      }
+      .action-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen" data-theme="light">
+  <div id="auth" class="min-h-screen">
+    <div class="min-h-screen flex items-center justify-center px-6 py-16">
+      <div class="card w-full max-w-md p-8 space-y-6">
+        <div class="text-center space-y-2">
+          <p class="text-xs uppercase tracking-[0.4em] text-slate-500">UPSC Evaluator Elite</p>
+          <h2 id="authTitle" class="text-2xl font-semibold">Login</h2>
+          <p id="authSubtitle" class="text-sm text-slate-500">Welcome back. Continue your elite streak.</p>
+        </div>
+        <form id="authForm" class="space-y-4">
+          <div>
+            <label class="text-sm">Full Name</label>
+            <input id="nameField" type="text" class="mt-2 w-full px-4 py-3 rounded-xl border" style="border-color: var(--border);" placeholder="Elite Aspirant" />
+          </div>
+          <div>
+            <label class="text-sm">Email</label>
+            <input id="emailField" type="email" class="mt-2 w-full px-4 py-3 rounded-xl border" style="border-color: var(--border);" placeholder="you@example.com" required />
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm">Password</label>
+            <div class="relative">
+              <input id="passwordField" type="password" class="mt-2 w-full px-4 py-3 pr-20 rounded-xl border" style="border-color: var(--border);" placeholder="••••••••" required />
+              <button id="passwordToggle" type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500">Show</button>
+            </div>
+            <div id="passwordStrength" class="space-y-2 hidden">
+              <div class="flex items-center justify-between text-xs text-slate-500">
+                <span>Use a strong password like Google recommends</span>
+                <span id="strengthLabel" class="font-medium">Weak</span>
+              </div>
+              <div class="h-2 rounded-full bg-slate-200">
+                <div id="strengthBar" class="h-2 rounded-full bg-rose-400" style="width: 20%;"></div>
+              </div>
+              <ul class="text-xs space-y-1">
+                <li id="reqLength" class="text-slate-500">• 8+ characters</li>
+                <li id="reqCase" class="text-slate-500">• Uppercase + lowercase</li>
+                <li id="reqNumber" class="text-slate-500">• At least one number</li>
+                <li id="reqSymbol" class="text-slate-500">• At least one symbol</li>
+              </ul>
+            </div>
+          </div>
+          <div class="flex items-center justify-between text-xs text-slate-500">
+            <span id="passwordHint">Use a strong password to stay secure.</span>
+            <button id="forgotPasswordBtn" type="button" class="text-indigo-500 font-medium">Forgot password?</button>
+          </div>
+          <div class="flex items-center justify-between text-xs text-slate-500">
+            <span>Already have an OTP?</span>
+            <button id="openOtpBtn" type="button" class="text-indigo-500 font-medium">Verify OTP</button>
+          </div>
+          <p id="authMessage" class="text-sm text-red-500 hidden">Message</p>
+          <button id="authSubmit" type="submit" class="btn-primary w-full py-3 rounded-full text-base font-medium">Login</button>
+        </form>
+        <div class="text-center text-sm text-slate-500">
+          <span id="authSwitchText">New here?</span>
+          <button id="authSwitchBtn" class="text-indigo-500 font-medium">Create an account</button>
+        </div>
+        <div class="text-xs text-slate-500 space-y-2 pt-2">
+          <p>By continuing, you agree to the <span class="text-slate-700 font-medium">Terms of Service</span> and <span class="text-slate-700 font-medium">Privacy Policy</span>.</p>
+          <p>We only use your email for login, OTP verification, and study alerts.</p>
+        </div>
+      </div>
+    </div>
+    <div id="authToast" class="md:hidden fixed inset-x-4 bottom-6 hidden">
+      <div id="authToastInner" class="px-4 py-3 rounded-2xl text-sm text-white shadow-lg"></div>
+    </div>
+  </div>
+  <div id="app" class="min-h-screen hidden">
+    <div class="mobile-shell">
+      <header class="sticky top-0 z-30 border-b" style="border-color: var(--border); background: var(--card);">
+        <div class="flex flex-col gap-4 px-4 py-4 safe-bottom">
+        <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+          <div class="flex flex-col gap-1">
+            <p class="text-xs uppercase tracking-[0.4em] text-slate-500">UPSC Evaluator Elite</p>
+            <h1 class="header-quote font-semibold leading-snug quote-line block-quote">“Steady focus today turns preparation into rank tomorrow.”</h1>
+          </div>
+          <div class="flex items-center gap-2 md:gap-3">
+            <button id="focusToggle" class="px-3 py-2 rounded-full border text-xs md:text-sm" style="border-color: var(--border);">Focus Mode</button>
+            <button id="themeToggle" class="px-3 py-2 rounded-full border text-xs md:text-sm" style="border-color: var(--border);">Theme</button>
+            <div class="relative">
+              <button id="profileBtn" class="flex items-center gap-2 px-3 py-2 rounded-full border" style="border-color: var(--border);">
+                <span id="profileInitial" class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-indigo-500 text-white">U</span>
+                <span id="profileName" class="hidden md:inline">Profile</span>
+              </button>
+              <div id="profileMenu" class="absolute right-0 mt-2 w-56 card p-2 hidden">
+                <div class="px-3 py-2 text-sm">
+                  <p id="profileEmail" class="text-slate-500">you@example.com</p>
+                </div>
+                <button id="editProfileBtn" class="w-full text-left px-3 py-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800">Edit Profile</button>
+                <button class="w-full text-left px-3 py-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800">Elite Settings</button>
+                <button id="logoutBtn" class="w-full text-left px-3 py-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800">Logout</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-3 gap-3">
+          <div class="card p-3 flex items-center justify-between">
+            <div>
+              <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Next Sprint</p>
+              <p id="nextSprint" class="text-sm font-semibold">Daily Answer Drill · 07:00 AM</p>
+            </div>
+            <button class="px-3 py-1 text-xs rounded-full border" style="border-color: var(--border);">Reschedule</button>
+          </div>
+          <div class="card p-3 flex items-center justify-between">
+            <div>
+              <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Elite Status</p>
+              <p id="eliteRank" class="text-sm font-semibold">Bronze Cadet</p>
+            </div>
+            <span id="eliteScore" class="text-xs px-2 py-1 rounded-full badge">Level 1</span>
+          </div>
+          <div class="card p-3 flex items-center justify-between">
+            <div>
+              <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Weekly Scorecard</p>
+              <p id="weeklyScore" class="text-sm font-semibold">0/300 pts</p>
+            </div>
+            <span class="text-xs text-slate-500">Auto-sync</span>
+          </div>
+        </div>
+      </div>
+      </header>
+
+      <main class="px-1 pb-28">
+      <section class="md:hidden mt-6">
+        <div class="quote-strip">
+          <p class="text-sm font-semibold quote-line">“One calm answer today keeps your rank dream on track.”</p>
+          <button id="mobileQuickEval" class="btn-primary rounded-full text-xs">Evaluate</button>
+        </div>
+      </section>
+
+      <section class="mt-6">
+        <div class="card p-4 flex flex-col gap-4">
+          <div>
+            <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Daily Flow</p>
+            <h3 class="text-lg font-semibold">Start with one focused task. Momentum follows.</h3>
+            <p class="text-sm text-slate-500">Pick a quick action to keep your UPSC rhythm consistent.</p>
+          </div>
+          <div class="flex flex-col gap-2">
+            <button id="dailyFlowEval" class="btn-primary px-4 py-2 rounded-full text-sm">Evaluate an answer</button>
+            <a href="#newsSection" class="px-4 py-2 rounded-full border text-sm text-center" style="border-color: var(--border);">Read today's news</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="topBanner" class="mt-8">
+        <div class="card card-soft p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 touch-card smooth-shadow">
+          <div>
+            <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Elite Offer</p>
+            <h2 class="text-2xl font-semibold">Unlock 50% off the Premium Mains Suite</h2>
+            <p class="text-sm text-slate-500 italic">“Quiet preparation today builds fearless answers tomorrow.”</p>
+            <p class="text-sm text-slate-500">Get mock tests, AI maps, and unlimited evaluations for 30 days.</p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <button class="btn-primary px-6 py-3 rounded-full text-sm">Claim Upgrade</button>
+            <button class="px-6 py-3 rounded-full border text-sm" style="border-color: var(--border);">Explore Plans</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="mt-8 grid lg:grid-cols-[1.2fr_0.8fr] gap-6">
+        <div class="card p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold">My Targets</h3>
+            <span class="text-xs text-slate-500">Week 3 Goals</span>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-sm mb-2">
+                <span>Daily Mains Answers</span>
+                <span class="font-semibold">4/7</span>
+              </div>
+              <div class="progress-track h-2 rounded-full">
+                <div class="progress-bar h-2 rounded-full" style="width: 58%;"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-sm mb-2">
+                <span>Prelims MCQs</span>
+                <span class="font-semibold">120/200</span>
+              </div>
+              <div class="progress-track h-2 rounded-full">
+                <div class="progress-bar h-2 rounded-full" style="width: 60%;"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-sm mb-2">
+                <span>Current Affairs Notes</span>
+                <span class="font-semibold">8/12</span>
+              </div>
+              <div class="progress-track h-2 rounded-full">
+                <div class="progress-bar h-2 rounded-full" style="width: 66%;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 text-xs">
+            <span class="px-3 py-1 rounded-full border" style="border-color: var(--border);">GS2 Governance</span>
+            <span class="px-3 py-1 rounded-full border" style="border-color: var(--border);">Optional Revision</span>
+            <span class="px-3 py-1 rounded-full border" style="border-color: var(--border);">Essay Quotes</span>
+          </div>
+        </div>
+        <div class="card p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold">Daily Habits</h3>
+            <span class="text-xs text-slate-500">Streak boosters</span>
+          </div>
+          <label class="flex items-center justify-between p-3 rounded-xl border" style="border-color: var(--border);">
+            <div>
+              <p class="font-medium">Daily News Analysis</p>
+              <p class="text-xs text-slate-500">Editorial + summary notes</p>
+            </div>
+            <input data-habit="news" type="checkbox" class="h-5 w-5" />
+          </label>
+          <label class="flex items-center justify-between p-3 rounded-xl border" style="border-color: var(--border);">
+            <div>
+              <p class="font-medium">Daily MCQs</p>
+              <p class="text-xs text-slate-500">10 questions minimum</p>
+            </div>
+            <input data-habit="mcq" type="checkbox" class="h-5 w-5" />
+          </label>
+          <button class="btn-primary w-full py-2 rounded-full text-sm">View Habit Analytics</button>
+        </div>
+      </section>
+
+      <section id="heroSection" class="mt-10 space-y-6">
+        <div class="card p-6 space-y-4">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm border badge" style="border-color: var(--border);">
+            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+            Elite evaluation stack now live
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-semibold leading-tight">“Answer with clarity today, and confidence will follow you into the exam hall.”</h2>
+          <p class="text-base text-slate-500">Move beyond basics with precision checks, structured cadence planning, and actionable improvements. Build top-rank momentum every single day.</p>
+          <div class="action-grid sm:grid-cols-2">
+            <button id="startEvaluation" class="action-btn primary">🚀 Start Elite Evaluation</button>
+            <button class="action-btn">📅 Schedule 7-Day Sprint</button>
+            <button class="action-btn">🧭 See Elite Blueprint</button>
+          </div>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="card p-4">
+              <p class="text-sm text-slate-500">Focus Minutes</p>
+              <p id="statFocus" class="text-2xl font-semibold">0</p>
+            </div>
+            <div class="card p-4">
+              <p class="text-sm text-slate-500">Accuracy Index</p>
+              <p id="statAccuracy" class="text-2xl font-semibold">0%</p>
+            </div>
+            <div class="card p-4">
+              <p class="text-sm text-slate-500">Weekly Targets</p>
+              <p id="statTargets" class="text-2xl font-semibold">0/7</p>
+            </div>
+            <div class="card p-4">
+              <p class="text-sm text-slate-500">Streak Rate</p>
+              <p id="statStreakRate" class="text-2xl font-semibold">0/7 days</p>
+            </div>
+          </div>
+        </div>
+        <div class="card p-6 space-y-6">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xl font-semibold">Performance Snapshot</h3>
+            <span class="text-sm text-slate-500">Updated now</span>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+              <p class="text-sm text-slate-500">Total Attempts</p>
+              <p id="statAttempts" class="text-2xl font-semibold">0</p>
+            </div>
+            <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+              <p class="text-sm text-slate-500">Average Marks</p>
+              <p id="statAverage" class="text-2xl font-semibold">0</p>
+            </div>
+            <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+              <p class="text-sm text-slate-500">Best Score</p>
+              <p id="statBest" class="text-2xl font-semibold">0</p>
+            </div>
+            <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+              <p class="text-sm text-slate-500">Current Streak</p>
+              <p id="statStreak" class="text-2xl font-semibold">0 days</p>
+            </div>
+          </div>
+          <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-sm text-slate-500">Momentum Sparkline</p>
+              <span class="text-xs text-emerald-500">+12% this week</span>
+            </div>
+            <svg viewBox="0 0 200 50" class="w-full h-12">
+              <path d="M5 40 L40 30 L70 34 L100 20 L130 24 L160 12 L195 18" fill="none" stroke="url(#spark)" stroke-width="4" stroke-linecap="round"/>
+              <defs>
+                <linearGradient id="spark" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#6366f1" />
+                  <stop offset="100%" stop-color="#22c55e" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <div class="flex items-center gap-3 text-sm text-slate-500">
+            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+            Elite consistency multiplies your score trajectory.
+          </div>
+        </div>
+      </section>
+
+      <section class="mt-12 grid md:grid-cols-3 gap-6">
+        <div class="card p-6 space-y-3">
+          <h3 class="text-lg font-semibold">Step-based flow</h3>
+          <p class="text-sm text-slate-500">Paper → Optional → Upload keeps the process calm and familiar.</p>
+        </div>
+        <div class="card p-6 space-y-3">
+          <h3 class="text-lg font-semibold">Exam simulation</h3>
+          <p class="text-sm text-slate-500">Full-screen writing, countdown timer, and discipline-focused UX.</p>
+        </div>
+        <div class="card p-6 space-y-3">
+          <h3 class="text-lg font-semibold">Support system</h3>
+          <p class="text-sm text-slate-500">Quick help, notes, and mentor tips always within reach.</p>
+        </div>
+      </section>
+
+      <section id="learnSection" class="mt-12">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-2xl font-semibold">Guided Learning Hub</h3>
+          <span class="text-sm text-slate-500">Everything you need, without overload</span>
+        </div>
+        <div class="card p-6">
+          <div class="flex flex-wrap gap-3 mb-6">
+            <button class="tab-btn active px-4 py-2 rounded-full border text-sm" data-tab="tab-reviews" style="border-color: var(--border);">AI Review</button>
+            <button class="tab-btn px-4 py-2 rounded-full border text-sm" data-tab="tab-schedule" style="border-color: var(--border);">Scheduler</button>
+            <button class="tab-btn px-4 py-2 rounded-full border text-sm" data-tab="tab-connector" style="border-color: var(--border);">AI Connector</button>
+          </div>
+          <div id="tab-reviews" class="tab-panel grid lg:grid-cols-3 gap-4">
+            <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+              <p class="text-sm text-slate-500">Auto Rubric</p>
+              <p class="text-lg font-semibold">Structure · Data · Conclusion</p>
+              <p class="text-sm text-slate-500">Generate rubric scorecards aligned with UPSC marking trends.</p>
+            </div>
+            <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+              <p class="text-sm text-slate-500">AI Tone Scanner</p>
+              <p class="text-lg font-semibold">Clarity & Precision</p>
+              <p class="text-sm text-slate-500">Detect fluff and surface arguments that need deeper framing.</p>
+            </div>
+            <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+              <p class="text-sm text-slate-500">Evidence Booster</p>
+              <p class="text-lg font-semibold">Facts & Examples</p>
+              <p class="text-sm text-slate-500">Recommend 2-3 data points from the latest reports.</p>
+            </div>
+          </div>
+          <div id="tab-schedule" class="tab-panel hidden grid lg:grid-cols-3 gap-4">
+            <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+              <p class="text-sm text-slate-500">Weekly Cadence</p>
+              <p class="text-lg font-semibold">7-day sprint plans</p>
+              <p class="text-sm text-slate-500">Auto build GS + Optional rotation based on weak zones.</p>
+            </div>
+            <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+              <p class="text-sm text-slate-500">Smart Breaks</p>
+              <p class="text-lg font-semibold">50/10 rhythm</p>
+              <p class="text-sm text-slate-500">Burnout-safe intervals with dynamic reminders.</p>
+            </div>
+            <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+              <p class="text-sm text-slate-500">Revision Calendar</p>
+              <p class="text-lg font-semibold">Auto-sync</p>
+              <p class="text-sm text-slate-500">Track backlog and schedule backlog recovery days.</p>
+            </div>
+          </div>
+          <div id="tab-connector" class="tab-panel hidden space-y-6">
+            <div class="p-5 rounded-2xl border" style="border-color: var(--border);">
+              <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <p class="text-sm text-slate-500">Connect your evaluation engine</p>
+                  <p class="text-lg font-semibold">Live AI Scoring API</p>
+                  <p class="text-sm text-slate-500">Paste your backend endpoint to receive real evaluation scores.</p>
+                </div>
+                <span id="connectorStatus" class="text-xs px-3 py-1 rounded-full badge">Disconnected</span>
+              </div>
+              <div class="mt-4 grid md:grid-cols-[1fr_auto] gap-3">
+                <input id="apiEndpoint" type="url" class="px-4 py-3 rounded-xl border w-full" style="border-color: var(--border);" placeholder="https://your-ai-api.com/evaluate" />
+                <button id="saveEndpoint" class="btn-primary px-6 py-3 rounded-full text-sm font-medium">Save Endpoint</button>
+              </div>
+              <div class="mt-3 grid md:grid-cols-[1fr_auto] gap-3">
+                <input id="authEndpoint" type="url" class="px-4 py-3 rounded-xl border w-full" style="border-color: var(--border);" placeholder="http://127.0.0.1:8000/api/v1 (Auth API base)" />
+                <div class="px-6 py-3 text-xs text-slate-500 flex items-center">Used for OTP + login</div>
+              </div>
+              <div class="mt-3 text-xs text-slate-500">Tip: Endpoint should accept POST with { answer, paper, subject } and respond with { score, summary, strengths, improvements }.</div>
+            </div>
+            <div class="grid lg:grid-cols-3 gap-4">
+              <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+                <p class="text-sm text-slate-500">Live Mode</p>
+                <p class="text-lg font-semibold">Real-time scoring</p>
+                <p class="text-sm text-slate-500">Switches analysis to use your API instead of simulated data.</p>
+              </div>
+              <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+                <p class="text-sm text-slate-500">Fallback</p>
+                <p class="text-lg font-semibold">Safe defaults</p>
+                <p class="text-sm text-slate-500">If API fails, shows guidance and keeps drafts safe.</p>
+              </div>
+              <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+                <p class="text-sm text-slate-500">Privacy</p>
+                <p class="text-lg font-semibold">Local-first</p>
+                <p class="text-sm text-slate-500">Draft stored on device, no auto-upload without your click.</p>
+              </div>
+            </div>
+            <div class="p-5 rounded-2xl border" style="border-color: var(--border);">
+              <p class="text-sm text-slate-500">Backend hookup checklist</p>
+              <p class="text-lg font-semibold">How to connect your server</p>
+              <ul class="mt-3 space-y-2 text-sm text-slate-500 list-disc list-inside">
+                <li>Expose a POST endpoint like <span class="text-slate-700">/evaluate</span> that accepts JSON.</li>
+                <li>Enable CORS for your frontend domain (or use a reverse proxy).</li>
+                <li>Return JSON with <span class="text-slate-700">score, summary, strengths[], improvements[]</span>.</li>
+                <li>Deploy on Render/Vercel/Fly and paste the public URL above.</li>
+              </ul>
+              <div class="mt-4 text-xs text-slate-500">Sample response: { "score": 72, "summary": "...", "strengths": ["..."], "improvements": ["..."] }</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="dailyPlan" class="mt-12 grid lg:grid-cols-[0.6fr_0.4fr] gap-6">
+        <div class="card p-6 space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-xl font-semibold">Today's Elite Plan</h3>
+              <p class="text-sm text-slate-500">Lock the rhythm, finish the day strong.</p>
+            </div>
+            <span class="text-xs px-3 py-1 rounded-full badge">Smart cadence</span>
+          </div>
+          <div id="planList" class="space-y-4"></div>
+          <div class="space-y-3">
+            <p class="text-sm text-slate-500">Customize your tasks</p>
+            <div class="grid md:grid-cols-[1fr_1fr_auto] gap-3">
+              <input id="planTaskInput" type="text" class="px-4 py-3 rounded-xl border" style="border-color: var(--border);" placeholder="Task (e.g., Write 1 GS answer)" />
+              <input id="planTimeInput" type="text" class="px-4 py-3 rounded-xl border" style="border-color: var(--border);" placeholder="Target time (e.g., 12 minutes)" />
+              <button id="addPlanBtn" class="btn-primary px-5 py-3 rounded-full text-sm font-medium">Add</button>
+            </div>
+            <p class="text-xs text-slate-500">Tip: You can edit or remove tasks to match your daily schedule.</p>
+          </div>
+        </div>
+        <div class="card p-6 space-y-6">
+          <div>
+            <h3 class="text-xl font-semibold">Elite Insight Radar</h3>
+            <p class="text-sm text-slate-500">Your readiness snapshot.</p>
+          </div>
+          <div class="space-y-5">
+            <div>
+              <div class="flex items-center justify-between text-sm mb-2">
+                <span>Structure Precision</span>
+                <span id="barStructure" class="font-semibold">72%</span>
+              </div>
+              <div class="progress-track h-2 rounded-full">
+                <div id="barStructureFill" class="progress-bar h-2 rounded-full" style="width: 72%;"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center justify-between text-sm mb-2">
+                <span>Content Depth</span>
+                <span id="barDepth" class="font-semibold">64%</span>
+              </div>
+              <div class="progress-track h-2 rounded-full">
+                <div id="barDepthFill" class="progress-bar h-2 rounded-full" style="width: 64%;"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center justify-between text-sm mb-2">
+                <span>Data Integration</span>
+                <span id="barData" class="font-semibold">58%</span>
+              </div>
+              <div class="progress-track h-2 rounded-full">
+                <div id="barDataFill" class="progress-bar h-2 rounded-full" style="width: 58%;"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center justify-between text-sm mb-2">
+                <span>Answer Speed</span>
+                <span id="barSpeed" class="font-semibold">70%</span>
+              </div>
+              <div class="progress-track h-2 rounded-full">
+                <div id="barSpeedFill" class="progress-bar h-2 rounded-full" style="width: 70%;"></div>
+              </div>
+            </div>
+          </div>
+          <button class="btn-primary w-full py-2 rounded-full">Generate AI Action Plan</button>
+        </div>
+      </section>
+
+      <section id="prelimsSection" class="mt-12">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-2xl font-semibold">Prelims Command Hub</h3>
+          <span class="text-sm text-slate-500">Daily limit: <span id="mcqLimitText">0/10 MCQs</span></span>
+        </div>
+        <div class="grid lg:grid-cols-[0.55fr_0.45fr] gap-6">
+          <div class="card p-6 space-y-5">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Daily Prelims Question</p>
+                <p class="text-lg font-semibold">Environment: Biodiversity hotspots in India</p>
+              </div>
+              <button id="dailyPrelimsBtn" class="btn-primary px-4 py-2 rounded-full text-sm">Attempt</button>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+                <p class="text-sm text-slate-500">MCQ Practice</p>
+                <p class="text-lg font-semibold">Topic-wise drills</p>
+                <button id="mcqAttemptBtn" class="mt-3 px-4 py-2 rounded-full border text-xs" style="border-color: var(--border);">Start 10 MCQs</button>
+              </div>
+              <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+                <p class="text-sm text-slate-500">Current Affairs</p>
+                <p class="text-lg font-semibold">Daily + Monthly</p>
+                <p class="text-xs text-slate-500 mt-2">Integrated with mains linkages.</p>
+              </div>
+              <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+                <p class="text-sm text-slate-500">PYQs</p>
+                <p class="text-lg font-semibold">Year & Topic filter</p>
+                <p class="text-xs text-slate-500 mt-2">Analyze trend of 10 years.</p>
+              </div>
+              <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+                <p class="text-sm text-slate-500">NCERT Browser</p>
+                <p class="text-lg font-semibold">Key highlights</p>
+                <p class="text-xs text-slate-500 mt-2">Revision flashcards ready.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card p-6 space-y-4">
+            <h4 class="text-lg font-semibold">Important Topics</h4>
+            <div class="flex flex-wrap gap-2 text-xs">
+              <span class="px-3 py-1 rounded-full border" style="border-color: var(--border);">Polity Amendments</span>
+              <span class="px-3 py-1 rounded-full border" style="border-color: var(--border);">Climate Finance</span>
+              <span class="px-3 py-1 rounded-full border" style="border-color: var(--border);">Mapping Rivers</span>
+              <span class="px-3 py-1 rounded-full border" style="border-color: var(--border);">Economic Surveys</span>
+              <span class="px-3 py-1 rounded-full border" style="border-color: var(--border);">Science Missions</span>
+              <span class="px-3 py-1 rounded-full border" style="border-color: var(--border);">Agriculture Schemes</span>
+            </div>
+            <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+              <p class="text-sm text-slate-500">Free Daily Limit</p>
+              <p class="text-lg font-semibold"><span id="mcqCount">0</span> / 10 MCQs used</p>
+              <p class="text-xs text-slate-500">Upgrade for unlimited practice.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="mainsSection" class="mt-12">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-2xl font-semibold">Mains Evaluation Suite</h3>
+          <span class="text-sm text-slate-500">AI + Mentor ready</span>
+        </div>
+        <div class="card p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div>
+            <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Quick Start</p>
+            <p class="text-lg font-semibold">Begin an evaluation in under a minute.</p>
+            <p class="text-sm text-slate-500">Choose your paper, marks, and language to launch exam mode.</p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <button class="btn-primary px-5 py-2 rounded-full text-sm" onclick="openPaperSheet()">Start Evaluation</button>
+            <button class="px-5 py-2 rounded-full border text-sm" style="border-color: var(--border);" onclick="openPaperSheet()">Select Paper</button>
+          </div>
+        </div>
+        <div class="grid lg:grid-cols-[0.6fr_0.4fr] gap-6">
+          <div class="card p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Daily Mains Question</p>
+                <p class="text-lg font-semibold">Discuss cooperative federalism in India.</p>
+              </div>
+              <button id="mainsEvaluateBtn" class="btn-primary px-4 py-2 rounded-full text-sm">Attempt Today</button>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+                <p class="text-sm text-slate-500">Evaluate Answer</p>
+                <p class="text-lg font-semibold">AI Rubric + Feedback</p>
+                <button class="mt-3 px-4 py-2 rounded-full border text-xs" style="border-color: var(--border);" onclick="openPaperSheet()">Start Evaluation</button>
+              </div>
+              <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+                <p class="text-sm text-slate-500">Mains PYQs</p>
+                <p class="text-lg font-semibold">Topic drills</p>
+                <p class="text-xs text-slate-500 mt-2">Answer bank ready.</p>
+              </div>
+            </div>
+            <div class="p-4 rounded-xl border" style="border-color: var(--border);">
+              <h4 class="text-sm font-semibold">My Evaluations</h4>
+              <div id="evaluationHistory" class="mt-3 space-y-2 text-sm text-slate-500"></div>
+            </div>
+          </div>
+          <div class="card p-6 space-y-4">
+            <h4 class="text-lg font-semibold">Evaluation Settings</h4>
+            <div class="space-y-3 text-sm text-slate-500">
+              <div class="flex items-center justify-between p-3 rounded-xl border" style="border-color: var(--border);">
+                <span>Difficulty</span>
+                <span id="currentDifficulty" class="font-semibold text-slate-700">Easy</span>
+              </div>
+              <div class="flex items-center justify-between p-3 rounded-xl border" style="border-color: var(--border);">
+                <span>Language</span>
+                <span id="currentLanguage" class="font-semibold text-slate-700">English</span>
+              </div>
+              <div class="flex items-center justify-between p-3 rounded-xl border" style="border-color: var(--border);">
+                <span>Daily Limit</span>
+                <span class="font-semibold text-slate-700">1 evaluation/day (Free)</span>
+              </div>
+            </div>
+            <button class="btn-primary w-full py-2 rounded-full">Upgrade for Unlimited</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="newsSection" class="mt-12">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-2xl font-semibold">News & Current Affairs</h3>
+          <span class="text-sm text-slate-500">The Hindu · Indian Express</span>
+        </div>
+        <div class="grid lg:grid-cols-3 gap-6">
+          <div class="card p-5 space-y-3">
+            <div class="flex items-center gap-2 text-xs">
+              <span class="px-2 py-1 rounded-full badge">GS2</span>
+              <span class="px-2 py-1 rounded-full border" style="border-color: var(--border);">Editorial</span>
+            </div>
+            <h4 class="text-lg font-semibold">Judicial reforms & case pendency</h4>
+            <p class="text-sm text-slate-500">Summary: Focus on digitization, vacancy reduction, and tribunals.</p>
+            <p class="text-xs text-slate-500">Mains angle: Analyze reform models vs. constitutional safeguards.</p>
+          </div>
+          <div class="card p-5 space-y-3">
+            <div class="flex items-center gap-2 text-xs">
+              <span class="px-2 py-1 rounded-full badge">Prelims</span>
+              <span class="px-2 py-1 rounded-full border" style="border-color: var(--border);">GS3</span>
+            </div>
+            <h4 class="text-lg font-semibold">India’s green hydrogen roadmap</h4>
+            <p class="text-sm text-slate-500">Summary: Production-linked incentives, export potential.</p>
+            <p class="text-xs text-slate-500">Prelims facts: National Green Hydrogen Mission targets.</p>
+          </div>
+          <div class="card p-5 space-y-3">
+            <div class="flex items-center gap-2 text-xs">
+              <span class="px-2 py-1 rounded-full badge">GS3</span>
+              <span class="px-2 py-1 rounded-full border" style="border-color: var(--border);">Monthly</span>
+            </div>
+            <h4 class="text-lg font-semibold">Monsoon variability & agriculture</h4>
+            <p class="text-sm text-slate-500">Summary: Climate-resilient cropping patterns and insurance.</p>
+            <p class="text-xs text-slate-500">Practice MCQs attached.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="subscriptionSection" class="mt-12">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-2xl font-semibold">Subscription & Paywall</h3>
+          <span class="text-sm text-slate-500">Most popular: Annual</span>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="card p-5 space-y-2">
+            <h4 class="text-lg font-semibold">Free</h4>
+            <p class="text-sm text-slate-500">1 evaluation/day · 5 AI chats/day</p>
+            <p class="text-xs text-slate-500">Best for beginners</p>
+            <button class="mt-3 px-4 py-2 rounded-full border text-xs" style="border-color: var(--border);">Current Plan</button>
+          </div>
+          <div class="card p-5 space-y-2">
+            <h4 class="text-lg font-semibold">Monthly</h4>
+            <p class="text-sm text-slate-500">40 evaluations/day · 100 AI chats/day</p>
+            <p class="text-xs text-slate-500">Mock tests + AI maps</p>
+            <button class="mt-3 btn-primary px-4 py-2 rounded-full text-xs">Upgrade</button>
+          </div>
+          <div class="card p-5 space-y-2">
+            <h4 class="text-lg font-semibold">Quarterly</h4>
+            <p class="text-sm text-slate-500">Save 20% · Full access</p>
+            <p class="text-xs text-slate-500">Test generator included</p>
+            <button class="mt-3 btn-primary px-4 py-2 rounded-full text-xs">Upgrade</button>
+          </div>
+          <div class="card p-5 space-y-2 border-2 border-indigo-500">
+            <h4 class="text-lg font-semibold">Annual</h4>
+            <p class="text-sm text-slate-500">Most Popular · Save 40%</p>
+            <p class="text-xs text-slate-500">Mentor reviews + AI maps</p>
+            <button class="mt-3 btn-primary px-4 py-2 rounded-full text-xs">Upgrade</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+    </div>
+  </div>
+
+  <nav class="mobile-nav md:hidden app-only">
+    <a href="#heroSection">
+      <span>🏠</span>
+      <small>Home</small>
+    </a>
+    <a href="#learnSection">
+      <span>📚</span>
+      <small>Learn</small>
+    </a>
+    <a href="#prelimsSection">
+      <span>🧾</span>
+      <small>Prelims</small>
+    </a>
+    <a href="#mainsSection" onclick="openPaperSheet()">
+      <span>✍️</span>
+      <small>Mains</small>
+    </a>
+    <a href="#newsSection">
+      <span>🗞️</span>
+      <small>News</small>
+    </a>
+  </nav>
+
+  <div id="sheetBackdrop" class="fixed inset-0 bg-black/40 hidden app-only"></div>
+
+  <div id="paperSheet" class="sheet fixed inset-x-0 bottom-0 h-[85vh] card rounded-t-3xl p-6 z-40 app-only">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-xl font-semibold">Select Paper</h3>
+      <button class="text-slate-500 sheet-close" type="button" onclick="closeSheets()">Close</button>
+    </div>
+    <div class="grid md:grid-cols-3 gap-4">
+      <button class="p-4 rounded-xl border text-left" style="border-color: var(--border);" onclick="selectPaper('GS1')">General Studies 1</button>
+      <button class="p-4 rounded-xl border text-left" style="border-color: var(--border);" onclick="selectPaper('GS2')">General Studies 2</button>
+      <button class="p-4 rounded-xl border text-left" style="border-color: var(--border);" onclick="selectPaper('GS3')">General Studies 3</button>
+      <button class="p-4 rounded-xl border text-left" style="border-color: var(--border);" onclick="selectPaper('GS4')">General Studies 4</button>
+      <button class="p-4 rounded-xl border text-left" style="border-color: var(--border);" onclick="selectPaper('Essay')">Essay</button>
+      <button class="p-4 rounded-xl border text-left" style="border-color: var(--border);" onclick="selectPaper('Optional')">Optional</button>
+    </div>
+  </div>
+
+  <div id="optionalSheet" class="sheet fixed inset-x-0 bottom-0 h-[85vh] card rounded-t-3xl p-6 z-40 app-only">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-xl font-semibold">Select Optional Subject</h3>
+      <button class="text-slate-500 sheet-close" type="button" onclick="closeSheets()">Close</button>
+    </div>
+    <div class="grid md:grid-cols-2 gap-4">
+      <button class="p-4 rounded-xl border text-left" style="border-color: var(--border);" onclick="selectSubject('History')">History</button>
+      <button class="p-4 rounded-xl border text-left" style="border-color: var(--border);" onclick="selectSubject('PSIR')">PSIR</button>
+      <button class="p-4 rounded-xl border text-left" style="border-color: var(--border);" onclick="selectSubject('Sociology')">Sociology</button>
+      <button class="p-4 rounded-xl border text-left" style="border-color: var(--border);" onclick="selectSubject('Geography')">Geography</button>
+    </div>
+  </div>
+
+  <div id="marksSheet" class="sheet fixed inset-x-0 bottom-0 h-[85vh] card rounded-t-3xl p-6 z-40 app-only">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-xl font-semibold">Select Question Marks</h3>
+      <button class="text-slate-500 sheet-close" type="button" onclick="closeSheets()">Close</button>
+    </div>
+    <p id="marksSubtitle" class="text-sm text-slate-500 mb-4">Choose the mark weight for this answer.</p>
+    <div class="grid md:grid-cols-3 gap-4">
+      <button class="p-4 rounded-xl border text-left" style="border-color: var(--border);" onclick="selectMarks(10)">10 Marks</button>
+      <button class="p-4 rounded-xl border text-left" style="border-color: var(--border);" onclick="selectMarks(15)">15 Marks</button>
+      <button id="marks20Btn" class="p-4 rounded-xl border text-left hidden" style="border-color: var(--border);" onclick="selectMarks(20)">20 Marks</button>
+    </div>
+  </div>
+
+  <div id="difficultySheet" class="sheet fixed inset-x-0 bottom-0 h-[85vh] card rounded-t-3xl p-6 z-40 app-only">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-xl font-semibold">Difficulty & Language</h3>
+      <button class="text-slate-500 sheet-close" type="button" onclick="closeSheets()">Close</button>
+    </div>
+    <div class="space-y-6">
+      <div>
+        <p class="text-sm text-slate-500 mb-3">Select Difficulty</p>
+        <div class="grid sm:grid-cols-2 gap-3">
+          <button id="difficultyEasy" class="p-4 rounded-xl border text-left" style="border-color: var(--border);" onclick="selectDifficulty('Easy')">Easy (Practice)</button>
+          <button id="difficultyHard" class="p-4 rounded-xl border text-left" style="border-color: var(--border);" onclick="selectDifficulty('Hard')">Hard (UPSC strict)</button>
+        </div>
+      </div>
+      <div>
+        <p class="text-sm text-slate-500 mb-3">Select Language</p>
+        <div class="grid sm:grid-cols-2 gap-3">
+          <button id="languageEnglish" class="p-4 rounded-xl border text-left" style="border-color: var(--border);" onclick="selectLanguage('English')">English</button>
+          <button id="languageHindi" class="p-4 rounded-xl border text-left" style="border-color: var(--border);" onclick="selectLanguage('Hindi')">Hindi</button>
+        </div>
+      </div>
+      <div class="flex justify-end">
+        <button class="btn-primary px-6 py-3 rounded-full text-sm font-medium" onclick="saveDifficultyLanguage()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="questionSheet" class="sheet fixed inset-x-0 bottom-0 h-[85vh] card rounded-t-3xl p-6 z-40 app-only">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-xl font-semibold">Enter the Question</h3>
+      <button class="text-slate-500 sheet-close" type="button" onclick="closeSheets()">Close</button>
+    </div>
+    <p class="text-sm text-slate-500 mb-4">Paste or type the exact question you are answering.</p>
+    <textarea id="questionInput" class="w-full h-40 p-4 rounded-2xl border" style="border-color: var(--border);" placeholder="e.g., Discuss the role of civil services in governance."></textarea>
+    <div class="mt-4 flex justify-end">
+      <button class="btn-primary px-6 py-3 rounded-full text-sm font-medium" onclick="saveQuestion()">Continue</button>
+    </div>
+  </div>
+
+  <div id="uploadSheet" class="sheet fixed inset-x-0 bottom-0 h-[85vh] card rounded-t-3xl p-6 z-40 app-only">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-xl font-semibold">Choose Answer Mode</h3>
+      <button class="text-slate-500 sheet-close" type="button" onclick="closeSheets()">Close</button>
+    </div>
+    <div class="grid md:grid-cols-2 gap-4">
+      <button class="p-4 rounded-xl border text-left" style="border-color: var(--border);" onclick="openExamMode()">
+        <p class="font-medium">Typed Answer</p>
+        <p class="text-sm text-slate-500">Start writing in exam mode.</p>
+      </button>
+      <div class="p-4 rounded-xl border text-left space-y-3" style="border-color: var(--border);">
+        <div>
+          <p class="font-medium">Upload Handwritten (PDF/JPG/PNG)</p>
+          <p class="text-sm text-slate-500">Drag & drop or tap to browse your file.</p>
+        </div>
+        <label id="dropzone" class="flex flex-col items-center justify-center gap-2 p-4 rounded-xl border border-dashed text-center cursor-pointer" style="border-color: var(--border);">
+          <input id="answerFile" type="file" accept="application/pdf,image/*" class="hidden" />
+          <span class="text-2xl">📄</span>
+          <span class="text-sm font-medium">Drop file here</span>
+          <span id="dropzoneStatus" class="text-xs text-slate-500">Max 25 pages · PDF or image</span>
+        </label>
+        <button id="uploadAnalyzeBtn" class="btn-primary w-full py-2 rounded-full text-sm">Analyze Uploaded Answer</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="examMode" class="fixed inset-0 bg-slate-950 text-slate-100 hidden z-50 app-only">
+    <div class="h-full flex flex-col">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+        <div>
+          <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Exam Mode</p>
+          <h3 id="examTitle" class="text-lg font-semibold">Paper: GS1</h3>
+          <p id="examMeta" class="text-xs text-slate-400">Easy · English</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-sm">Timer: <span id="timerDisplay">45:00</span></span>
+          <button id="timerToggle" class="px-4 py-2 rounded-full bg-slate-800">Pause</button>
+          <button class="px-4 py-2 rounded-full bg-slate-800" onclick="exitExamMode()">Exit</button>
+        </div>
+      </div>
+      <div class="flex-1 p-6">
+        <textarea id="answerInput" class="w-full h-full p-6 rounded-2xl bg-slate-900 text-slate-100 focus:outline-none" placeholder="Write your answer here..."></textarea>
+      </div>
+      <div class="flex items-center justify-between px-6 py-4 border-t border-slate-800">
+        <p class="text-sm">Word Count: <span id="wordCount">0</span></p>
+        <p id="draftStatus" class="text-sm text-slate-400">Draft not saved</p>
+        <button id="analyzeBtn" class="px-6 py-2 rounded-full bg-indigo-500">Analyze Answer</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="analysisPanel" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center app-only">
+    <div class="card p-8 w-full max-w-2xl space-y-6" onclick="event.stopPropagation()">
+      <div id="loadingSkeleton" class="space-y-4">
+        <div class="h-6 bg-slate-200 rounded w-2/3"></div>
+        <div class="h-4 bg-slate-200 rounded w-full"></div>
+        <div class="h-4 bg-slate-200 rounded w-5/6"></div>
+        <div class="h-4 bg-slate-200 rounded w-4/6"></div>
+      </div>
+      <div id="resultContainer" class="hidden space-y-4">
+        <h3 class="text-xl font-semibold">Evaluation Result</h3>
+        <p id="resultSummary" class="text-sm text-slate-500">Your answer shows strong structure and clarity. Add more examples, recent data points, and a sharper conclusion to reach 80+.</p>
+        <div class="flex flex-wrap items-center gap-4">
+          <span class="px-4 py-2 rounded-full bg-emerald-500 text-white">Score: <span id="score">12</span>/<span id="scoreMax">15</span></span>
+          <span class="text-sm text-slate-500" id="resultMeta">Easy · English · GS1</span>
+          <span class="text-sm text-slate-500">Streak updated</span>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div class="p-3 rounded-xl border" style="border-color: var(--border);">
+            <p class="text-sm font-medium">Section Breakdown</p>
+            <div class="mt-2 space-y-2 text-xs text-slate-500">
+              <div>
+                <div class="flex justify-between"><span>Understanding</span><span id="breakUnderstanding">72%</span></div>
+                <div class="progress-track h-1.5 rounded-full"><div id="breakUnderstandingFill" class="progress-bar h-1.5 rounded-full" style="width:72%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between"><span>Content</span><span id="breakContent">68%</span></div>
+                <div class="progress-track h-1.5 rounded-full"><div id="breakContentFill" class="progress-bar h-1.5 rounded-full" style="width:68%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between"><span>Structure</span><span id="breakStructure">70%</span></div>
+                <div class="progress-track h-1.5 rounded-full"><div id="breakStructureFill" class="progress-bar h-1.5 rounded-full" style="width:70%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between"><span>Analysis</span><span id="breakAnalysis">66%</span></div>
+                <div class="progress-track h-1.5 rounded-full"><div id="breakAnalysisFill" class="progress-bar h-1.5 rounded-full" style="width:66%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between"><span>Language</span><span id="breakLanguage">74%</span></div>
+                <div class="progress-track h-1.5 rounded-full"><div id="breakLanguageFill" class="progress-bar h-1.5 rounded-full" style="width:74%"></div></div>
+              </div>
+              <div>
+                <div class="flex justify-between"><span>Value Addition</span><span id="breakValue">65%</span></div>
+                <div class="progress-track h-1.5 rounded-full"><div id="breakValueFill" class="progress-bar h-1.5 rounded-full" style="width:65%"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="p-3 rounded-xl border" style="border-color: var(--border);">
+            <p class="text-sm font-medium">Strengths</p>
+            <ul id="resultStrengths" class="text-sm text-slate-500 list-disc list-inside">
+              <li>Clear introduction</li>
+              <li>Balanced viewpoints</li>
+            </ul>
+          </div>
+          <div class="p-3 rounded-xl border" style="border-color: var(--border);">
+            <p class="text-sm font-medium">Weaknesses</p>
+            <ul id="resultWeaknesses" class="text-sm text-slate-500 list-disc list-inside">
+              <li>Needs more data points</li>
+              <li>Conclusion can be sharper</li>
+            </ul>
+          </div>
+          <div class="p-3 rounded-xl border" style="border-color: var(--border);">
+            <p class="text-sm font-medium">Missing Dimensions</p>
+            <ul id="resultMissing" class="text-sm text-slate-500 list-disc list-inside">
+              <li>Interlink with SDG targets</li>
+              <li>Recent committee report</li>
+            </ul>
+          </div>
+          <div class="p-3 rounded-xl border" style="border-color: var(--border);">
+            <p class="text-sm font-medium">Topper Suggestions</p>
+            <ul id="resultSuggestions" class="text-sm text-slate-500 list-disc list-inside">
+              <li>Use 2 micro case studies</li>
+              <li>End with reform roadmap</li>
+            </ul>
+          </div>
+          <div class="p-3 rounded-xl border sm:col-span-2" style="border-color: var(--border);">
+            <p class="text-sm font-medium">Model Answer (Summary)</p>
+            <p id="resultModel" class="text-sm text-slate-500">A model answer covers cooperative federalism through institutional mechanisms (GST Council, ISC), fiscal transfers, and joint policy design, concluding with reform needs for fiscal autonomy.</p>
+          </div>
+          <div class="p-3 rounded-xl border sm:col-span-2" style="border-color: var(--border);">
+            <p class="text-sm font-medium">Diagram Feedback</p>
+            <p id="resultDiagram" class="text-sm text-slate-500">No diagram detected. Add a simple flowchart or map for value addition.</p>
+          </div>
+        </div>
+        <p id="resultStatus" class="text-xs text-slate-500">Live scoring ready.</p>
+        <button class="px-4 py-2 rounded-full border analysis-close" type="button" style="border-color: var(--border);" onclick="closeAnalysis()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="profileModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center">
+    <div class="card p-6 w-full max-w-lg space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-semibold">Update Profile</h3>
+        <button class="text-slate-500" onclick="closeProfileModal()">Close</button>
+      </div>
+      <div class="space-y-3">
+        <div>
+          <label class="text-sm">Full Name</label>
+          <input id="profileNameInput" type="text" class="mt-2 w-full px-4 py-3 rounded-xl border" style="border-color: var(--border);" />
+        </div>
+        <div>
+          <label class="text-sm">Email</label>
+          <input id="profileEmailInput" type="email" class="mt-2 w-full px-4 py-3 rounded-xl border" style="border-color: var(--border);" />
+        </div>
+        <div>
+          <label class="text-sm">New Password (optional)</label>
+          <input id="profilePasswordInput" type="password" class="mt-2 w-full px-4 py-3 rounded-xl border" style="border-color: var(--border);" placeholder="Leave blank to keep current" />
+        </div>
+      </div>
+      <p id="profileMessage" class="text-sm text-red-500 hidden">Message</p>
+      <div class="flex justify-end gap-2">
+        <button class="px-4 py-2 rounded-full border" style="border-color: var(--border);" onclick="closeProfileModal()">Cancel</button>
+        <button id="saveProfileBtn" class="btn-primary px-5 py-2 rounded-full">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="otpModal" class="fixed inset-0 hidden z-50 flex items-center justify-center">
+    <div class="card p-6 w-full max-w-md space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 id="otpModalTitle" class="text-xl font-semibold">Verify OTP</h3>
+        <button class="text-slate-500" onclick="closeOtpModal()">Back</button>
+      </div>
+      <p id="otpSubtitle" class="text-sm text-slate-500">We sent a 6-digit OTP to your email. Enter it below to activate your account.</p>
+      <div>
+        <label class="text-sm">OTP Code</label>
+        <input id="otpInput" type="text" inputmode="numeric" maxlength="6" class="mt-2 w-full px-4 py-3 rounded-xl border" style="border-color: var(--border);" placeholder="123456" />
+      </div>
+      <p id="otpMessage" class="text-sm text-red-500 hidden">Message</p>
+      <p id="otpStatus" class="text-xs text-slate-500"></p>
+      <div class="flex flex-col sm:flex-row gap-2 justify-end">
+        <button id="resendOtpBtn" class="px-4 py-2 rounded-full border" style="border-color: var(--border);">Resend OTP</button>
+        <button id="verifyOtpBtn" class="btn-primary px-5 py-2 rounded-full">Verify & Continue</button>
+      </div>
+      <p class="text-xs text-slate-500">Check your email (Inbox/Spam) for the 6-digit OTP.</p>
+    </div>
+  </div>
+
+  <div id="planModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center">
+    <div class="card p-6 w-full max-w-lg space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 id="planModalTitle" class="text-xl font-semibold">Edit Plan Task</h3>
+        <button class="text-slate-500" onclick="closePlanModal()">Close</button>
+      </div>
+      <div class="space-y-3">
+        <div>
+          <label class="text-sm">Task</label>
+          <input id="planTaskModalInput" type="text" class="mt-2 w-full px-4 py-3 rounded-xl border" style="border-color: var(--border);" placeholder="Write 1 GS answer" />
+        </div>
+        <div>
+          <label class="text-sm">Target time</label>
+          <input id="planTimeModalInput" type="text" class="mt-2 w-full px-4 py-3 rounded-xl border" style="border-color: var(--border);" placeholder="12 minutes" />
+        </div>
+      </div>
+      <p id="planModalMessage" class="text-sm text-red-500 hidden">Message</p>
+      <div class="flex justify-end gap-2">
+        <button class="px-4 py-2 rounded-full border" style="border-color: var(--border);" onclick="closePlanModal()">Cancel</button>
+        <button id="planModalSave" class="btn-primary px-5 py-2 rounded-full">Save Task</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.USER_KEY = window.USER_KEY || 'UPSC_USER';
+    const USERS_KEY = 'UPSC_USERS';
+    const THEME_KEY = 'UPSC_THEME';
+    const STATS_KEY = 'UPSC_STATS';
+    const PLAN_KEY = 'UPSC_PLAN';
+    const PLAN_ITEMS_KEY = 'UPSC_PLAN_ITEMS';
+    const DRAFT_KEY = 'UPSC_DRAFT';
+    const SCORE_KEY = 'UPSC_WEEKLY_SCORE';
+    const API_ENDPOINT_KEY = 'UPSC_AI_ENDPOINT';
+    window.AUTH_API_BASE_KEY = window.AUTH_API_BASE_KEY || 'UPSC_AUTH_BASE';
+    const OTP_KEY = 'UPSC_PENDING_OTP';
+    const OTP_USER_KEY = 'UPSC_PENDING_USER';
+    const RESET_KEY = 'UPSC_RESET_OTP';
+    const RESET_EMAIL_KEY = 'UPSC_RESET_EMAIL';
+    const HISTORY_KEY = 'UPSC_EVAL_HISTORY';
+    const HABIT_KEY = 'UPSC_HABITS';
+    const MCQ_KEY = 'UPSC_MCQ_DAILY';
+
+    function getUsers() {
+      const stored = localStorage.getItem(USERS_KEY);
+      if (!stored) return [];
+      try {
+        const parsed = JSON.parse(stored);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function setUsers(users) {
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+
+    function showAuth(mode = 'login') {
+      resetOverlays();
+      document.body.classList.remove('app-ready');
+      document.getElementById('auth').classList.remove('hidden');
+      document.getElementById('app').classList.add('hidden');
+      const isLogin = mode === 'login';
+      document.getElementById('authTitle').textContent = isLogin ? 'Login' : 'Register';
+      document.getElementById('authSubtitle').textContent = isLogin
+        ? 'Welcome back. Continue your elite streak.'
+        : 'Create your elite account and start evaluating.';
+      document.getElementById('authSubmit').textContent = isLogin ? 'Login' : 'Register';
+      document.getElementById('authSwitchText').textContent = isLogin ? 'New here?' : 'Already have an account?';
+      document.getElementById('authSwitchBtn').textContent = isLogin ? 'Create an account' : 'Login instead';
+      document.getElementById('nameField').parentElement.classList.toggle('hidden', isLogin);
+      document.getElementById('authForm').dataset.mode = mode;
+      const strengthWrap = document.getElementById('passwordStrength');
+      if (strengthWrap) {
+        strengthWrap.classList.toggle('hidden', isLogin);
+      }
+      const hint = document.getElementById('passwordHint');
+      const forgotBtn = document.getElementById('forgotPasswordBtn');
+      if (hint) {
+        hint.textContent = isLogin ? 'Need help signing in?' : 'Use a strong password like Google recommends.';
+      }
+      if (forgotBtn) {
+        forgotBtn.classList.toggle('hidden', !isLogin);
+      }
+      showAuthMessage('');
+    }
+
+    // Step controller (uses existing theme, no layout change)
+    function setAuthStep(step, context = 'register') {
+      if (step === 'login' || step === 'register') {
+        showAuth(step);
+        return;
+      }
+      if (step === 'otp') {
+        openOtpModal(context);
+      }
+    }
+
+    function showAuthMessage(message, tone = 'error') {
+      const messageEl = document.getElementById('authMessage');
+      const toast = document.getElementById('authToast');
+      const toastInner = document.getElementById('authToastInner');
+      if (!message) {
+        messageEl.classList.add('hidden');
+        messageEl.textContent = '';
+        if (toast) {
+          toast.classList.add('hidden');
+        }
+        return;
+      }
+      messageEl.classList.remove('hidden');
+      messageEl.textContent = message;
+      messageEl.classList.toggle('text-emerald-500', tone === 'success');
+      messageEl.classList.toggle('text-red-500', tone !== 'success');
+      if (toast && toastInner) {
+        toastInner.textContent = message;
+        toastInner.className = `px-4 py-3 rounded-2xl text-sm text-white shadow-lg ${tone === 'success' ? 'bg-emerald-500' : 'bg-rose-500'}`;
+        toast.classList.remove('hidden');
+        clearTimeout(toast.timerId);
+        toast.timerId = setTimeout(() => toast.classList.add('hidden'), 2400);
+      }
+    }
+
+    function isStrongPassword(password) {
+      const strong = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(password);
+      return strong;
+    }
+
+    function updatePasswordStrength() {
+      const password = document.getElementById('passwordField').value.trim();
+      const mode = document.getElementById('authForm').dataset.mode || 'login';
+      const strengthWrap = document.getElementById('passwordStrength');
+      if (strengthWrap) {
+        strengthWrap.classList.toggle('hidden', mode === 'login');
+      }
+      if (mode === 'login') {
+        showAuthMessage('');
+        return;
+      }
+
+      const lengthOk = password.length >= 8;
+      const caseOk = /[a-z]/.test(password) && /[A-Z]/.test(password);
+      const numberOk = /\d/.test(password);
+      const symbolOk = /[^A-Za-z0-9]/.test(password);
+      const score = [lengthOk, caseOk, numberOk, symbolOk].filter(Boolean).length;
+      const strengthBar = document.getElementById('strengthBar');
+      const strengthLabel = document.getElementById('strengthLabel');
+      const strengthMap = [
+        { label: 'Weak', width: '20%', color: 'bg-rose-400' },
+        { label: 'Fair', width: '45%', color: 'bg-amber-400' },
+        { label: 'Good', width: '70%', color: 'bg-lime-400' },
+        { label: 'Strong', width: '100%', color: 'bg-emerald-500' }
+      ];
+      const strengthData = strengthMap[Math.min(score, 3)];
+      if (strengthBar) {
+        strengthBar.style.width = strengthData.width;
+        strengthBar.className = `h-2 rounded-full ${strengthData.color}`;
+      }
+      if (strengthLabel) {
+        strengthLabel.textContent = strengthData.label;
+      }
+      const reqLength = document.getElementById('reqLength');
+      const reqCase = document.getElementById('reqCase');
+      const reqNumber = document.getElementById('reqNumber');
+      const reqSymbol = document.getElementById('reqSymbol');
+      if (reqLength) reqLength.className = lengthOk ? 'text-emerald-500 text-xs' : 'text-slate-500 text-xs';
+      if (reqCase) reqCase.className = caseOk ? 'text-emerald-500 text-xs' : 'text-slate-500 text-xs';
+      if (reqNumber) reqNumber.className = numberOk ? 'text-emerald-500 text-xs' : 'text-slate-500 text-xs';
+      if (reqSymbol) reqSymbol.className = symbolOk ? 'text-emerald-500 text-xs' : 'text-slate-500 text-xs';
+
+      if (!password) {
+        showAuthMessage('');
+        return;
+      }
+      if (isStrongPassword(password)) {
+        showAuthMessage('Strong password. Great discipline.', 'success');
+      } else {
+        showAuthMessage('Password must be 8+ chars with uppercase, lowercase, number, and symbol.', 'error');
+      }
+    }
+
+    function showApp() {
+      resetOverlays();
+      document.body.classList.remove('otp-only');
+      const otpModal = document.getElementById('otpModal');
+      if (otpModal) otpModal.classList.add('hidden');
+      document.body.classList.add('app-ready');
+      const auth = document.getElementById('auth');
+      const app = document.getElementById('app');
+      if (auth) auth.classList.add('hidden');
+      if (app) app.classList.remove('hidden');
+      try {
+        renderStats();
+        renderInsights();
+        updateWordCount();
+        loadPlan();
+        updateProfile();
+        updateWeeklyScore();
+        updateConnectorStatus();
+        renderEvaluationHistory();
+        loadHabits();
+        updateMcqLimit();
+        updateEvaluationSettings();
+        closeSheets();
+        closeAnalysis();
+      } catch (error) {
+        console.error('Post-login init failed', error);
+      }
+    }
+
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function registerLocal() {
+      const name = document.getElementById('nameField').value.trim();
+      const email = document.getElementById('emailField').value.trim().toLowerCase();
+      const password = document.getElementById('passwordField').value.trim();
+      if (!name || !email || !password) {
+        showAuthMessage('Please complete all fields.');
+        return;
+      }
+      if (!validateEmail(email)) {
+        showAuthMessage('Enter a valid email.');
+        return;
+      }
+      if (!isStrongPassword(password)) {
+        showAuthMessage('Use 8+ chars with uppercase, lowercase, number, and symbol.');
+        return;
+      }
+      const users = getUsers();
+      if (users.find(user => user.email === email)) {
+        showAuthMessage('Account already exists. Please login.', 'error');
+        return;
+      }
+      const newUser = { name, email, password };
+      users.push(newUser);
+      setUsers(users);
+      localStorage.setItem(window.USER_KEY, JSON.stringify(newUser));
+      localStorage.removeItem(OTP_KEY);
+      localStorage.removeItem(OTP_USER_KEY);
+      showAuthMessage('Registration successful. Welcome aboard.', 'success');
+      showApp();
+    }
+
+    function loginLocal() {
+      const email = document.getElementById('emailField').value.trim().toLowerCase();
+      const password = document.getElementById('passwordField').value.trim();
+      if (!email || !password) {
+        showAuthMessage('Please enter email and password.');
+        return;
+      }
+      const users = getUsers();
+      let user = users.find(entry => entry.email === email && entry.password === password);
+      if (!user) {
+        const legacy = JSON.parse(localStorage.getItem(window.USER_KEY) || 'null');
+        if (legacy && legacy.email === email && legacy.password === password) {
+          user = legacy;
+          if (!users.find(entry => entry.email === legacy.email)) {
+            users.push(legacy);
+            setUsers(users);
+          }
+        }
+      }
+      if (!user) {
+        const pending = JSON.parse(localStorage.getItem(OTP_USER_KEY) || 'null');
+        if (pending && pending.email === email && pending.password === password) {
+          user = pending;
+          if (!users.find(entry => entry.email === pending.email)) {
+            users.push(pending);
+            setUsers(users);
+          }
+          localStorage.removeItem(OTP_USER_KEY);
+          localStorage.removeItem(OTP_KEY);
+        }
+      }
+      if (!user) {
+        showAuthMessage('Not registered. Please register first.');
+        return;
+      }
+      localStorage.setItem(window.USER_KEY, JSON.stringify(user));
+      showAuthMessage('Login successful. Welcome back.', 'success');
+      showApp();
+    }
+
+    function protectPage() {
+      const params = new URLSearchParams(window.location.search);
+      const forceParam = params.get('forceApp') === '1';
+      const forceApp = localStorage.getItem('UPSC_FORCE_APP');
+      if (forceParam || forceApp) {
+        localStorage.removeItem('UPSC_FORCE_APP');
+        if (forceParam && window.history?.replaceState) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+        showApp();
+        return true;
+      }
+      const user = localStorage.getItem(window.USER_KEY);
+      const token = localStorage.getItem('access_token');
+      if (!user && !token) {
+        showAuth('login');
+        return false;
+      }
+      showApp();
+      return true;
+    }
+
+    function logoutLocal() {
+      localStorage.removeItem(window.USER_KEY);
+      showAuth('login');
+    }
+
+    function resetOverlays() {
+      const overlayIds = ['analysisPanel', 'sheetBackdrop', 'examMode'];
+      overlayIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.remove('open');
+          el.classList.add('hidden');
+        }
+      });
+      document.querySelectorAll('.sheet').forEach(sheet => {
+        sheet.classList.remove('open');
+      });
+      const menu = document.getElementById('profileMenu');
+      if (menu) {
+        menu.classList.add('hidden');
+      }
+      stopTimer();
+    }
+
+    function openProfileModal() {
+      const user = JSON.parse(localStorage.getItem(window.USER_KEY) || '{}');
+      document.getElementById('profileNameInput').value = user.name || '';
+      document.getElementById('profileEmailInput').value = user.email || '';
+      document.getElementById('profilePasswordInput').value = '';
+      document.getElementById('profileMessage').classList.add('hidden');
+      document.getElementById('profileModal').classList.remove('hidden');
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profileModal').classList.add('hidden');
+    }
+
+    function saveProfile() {
+      const name = document.getElementById('profileNameInput').value.trim();
+      const email = document.getElementById('profileEmailInput').value.trim().toLowerCase();
+      const password = document.getElementById('profilePasswordInput').value.trim();
+      const messageEl = document.getElementById('profileMessage');
+      if (!name || !email) {
+        messageEl.textContent = 'Name and email are required.';
+        messageEl.classList.remove('hidden');
+        messageEl.classList.remove('text-emerald-500');
+        messageEl.classList.add('text-red-500');
+        return;
+      }
+      if (!validateEmail(email)) {
+        messageEl.textContent = 'Enter a valid email.';
+        messageEl.classList.remove('hidden');
+        messageEl.classList.remove('text-emerald-500');
+        messageEl.classList.add('text-red-500');
+        return;
+      }
+      if (password && !isStrongPassword(password)) {
+        messageEl.textContent = 'Password must be 8+ chars with uppercase, lowercase, number, and symbol.';
+        messageEl.classList.remove('hidden');
+        messageEl.classList.remove('text-emerald-500');
+        messageEl.classList.add('text-red-500');
+        return;
+      }
+      const users = getUsers();
+      const currentUser = JSON.parse(localStorage.getItem(window.USER_KEY) || '{}');
+      const existing = users.find(user => user.email === email && user.email !== currentUser.email);
+      if (existing) {
+        messageEl.textContent = 'Email already in use.';
+        messageEl.classList.remove('hidden');
+        messageEl.classList.remove('text-emerald-500');
+        messageEl.classList.add('text-red-500');
+        return;
+      }
+      const updatedUser = {
+        name,
+        email,
+        password: password || currentUser.password || ''
+      };
+      const updatedUsers = users.map(user => user.email === currentUser.email ? updatedUser : user);
+      setUsers(updatedUsers);
+      localStorage.setItem(window.USER_KEY, JSON.stringify(updatedUser));
+      updateProfile();
+      messageEl.textContent = 'Profile updated successfully.';
+      messageEl.classList.remove('hidden');
+      messageEl.classList.remove('text-red-500');
+      messageEl.classList.add('text-emerald-500');
+      setTimeout(closeProfileModal, 1200);
+    }
+
+    function openOtpModal(context = 'register') {
+      try {
+        localStorage.setItem('UPSC_OTP_CONTEXT', context);
+      } catch (error) {
+        console.warn('Failed to store OTP context', error);
+      }
+      window.location.href = `otp.html?context=${encodeURIComponent(context)}`;
+    }
+
+    function closeOtpModal() {
+      window.location.href = 'index2.html';
+    }
+
+    function showOtpMessage(message, tone = 'error') {
+      const messageEl = document.getElementById('otpMessage');
+      if (!message) {
+        messageEl.classList.add('hidden');
+        return;
+      }
+      messageEl.textContent = message;
+      messageEl.classList.remove('hidden');
+      messageEl.classList.toggle('text-emerald-500', tone === 'success');
+      messageEl.classList.toggle('text-red-500', tone !== 'success');
+    }
+
+    function verifyOtp() {
+      const input = document.getElementById('otpInput').value.trim();
+      const context = document.getElementById('otpModal').dataset.context || 'register';
+      const otp = context === 'reset' ? (localStorage.getItem(RESET_KEY) || '') : (localStorage.getItem(OTP_KEY) || '');
+      if (!input) {
+        showOtpMessage('Enter the OTP code.');
+        return;
+      }
+      if (input !== otp) {
+        showOtpMessage('Invalid OTP. Please try again.');
+        return;
+      }
+      if (context === 'reset') {
+        const email = localStorage.getItem(RESET_EMAIL_KEY) || '';
+        if (!email) {
+          showOtpMessage('Reset session expired. Please try again.');
+          return;
+        }
+        const newPassword = prompt('Enter a new strong password');
+        if (!newPassword || !isStrongPassword(newPassword)) {
+          showOtpMessage('Password must be 8+ chars with uppercase, lowercase, number, and symbol.');
+          return;
+        }
+        const users = getUsers();
+        const updatedUsers = users.map(user => user.email === email ? { ...user, password: newPassword } : user);
+        setUsers(updatedUsers);
+        localStorage.removeItem(RESET_KEY);
+        localStorage.removeItem(RESET_EMAIL_KEY);
+        showOtpMessage('Password reset successful. Please login.', 'success');
+        setTimeout(() => {
+          closeOtpModal();
+          showAuth('login');
+        }, 800);
+        return;
+      }
+      const pendingUser = JSON.parse(localStorage.getItem(OTP_USER_KEY) || '{}');
+      if (!pendingUser.email) {
+        showOtpMessage('Registration session expired. Please register again.');
+        return;
+      }
+      const users = getUsers();
+      users.push(pendingUser);
+      setUsers(users);
+      localStorage.setItem(window.USER_KEY, JSON.stringify(pendingUser));
+      localStorage.removeItem(OTP_KEY);
+      localStorage.removeItem(OTP_USER_KEY);
+      showOtpMessage('OTP verified. Welcome aboard.', 'success');
+      setTimeout(() => {
+        closeOtpModal();
+        showApp();
+      }, 800);
+    }
+
+    function resendOtp() {
+      const context = document.getElementById('otpModal').dataset.context || 'register';
+      if (context === 'reset') {
+        const email = localStorage.getItem(RESET_EMAIL_KEY) || '';
+        if (!email) {
+          showOtpMessage('Reset session expired. Please try again.');
+          return;
+        }
+        const otp = String(Math.floor(100000 + Math.random() * 900000));
+        localStorage.setItem(RESET_KEY, otp);
+        showOtpMessage(`Reset OTP resent to ${email}. Demo OTP: ${otp}`, 'success');
+        return;
+      }
+      const pendingUser = JSON.parse(localStorage.getItem(OTP_USER_KEY) || '{}');
+      if (!pendingUser.email) {
+        showOtpMessage('Registration session expired. Please register again.');
+        return;
+      }
+      const otp = String(Math.floor(100000 + Math.random() * 900000));
+      localStorage.setItem(OTP_KEY, otp);
+      showOtpMessage(`OTP resent to ${pendingUser.email}. Demo OTP: ${otp}`, 'success');
+    }
+
+   function initAuth() {
+  const form = document.getElementById('authForm');
+  const submitBtn = document.getElementById('authSubmit');
+  if (!form) return;
+
+  let authInFlight = false;
+
+  const handleAuthSubmit = async (event) => {
+    event?.preventDefault?.();
+    if (authInFlight) return;
+    authInFlight = true;
+    if (submitBtn) submitBtn.disabled = true;
+
+    const titleLabel = (document.getElementById('authTitle')?.textContent || '').toLowerCase();
+    const mode = titleLabel.includes('login') ? 'login' : 'register';
+    form.dataset.mode = mode;
+    const loginFn = typeof window.login === 'function' ? window.login : loginLocal;
+    const registerFn = typeof window.register === 'function' ? window.register : registerLocal;
+    const usingBackend = typeof window.login === 'function' && typeof window.register === 'function';
+    if (!usingBackend) {
+      showAuthMessage('Backend auth not loaded. Check app.js path or console errors.', 'error');
+    }
+
+    try {
+      if (mode === 'login') {
+        await loginFn();
+      } else {
+        await registerFn();
+      }
+    } catch (err) {
+      showAuthMessage(err?.message || "Auth failed", "error");
+    } finally {
+      authInFlight = false;
+      if (submitBtn) submitBtn.disabled = false;
+    }
+  };
+
+  form.addEventListener('submit', handleAuthSubmit);
+}
+      document.getElementById('authSwitchBtn').addEventListener('click', () => {
+        const mode = document.getElementById('authForm').dataset.mode === 'login' ? 'register' : 'login';
+        showAuth(mode);
+        updatePasswordStrength();
+      });
+      document.getElementById('passwordField').addEventListener('input', updatePasswordStrength);
+    
+
+    function togglePasswordVisibility() {
+      const field = document.getElementById('passwordField');
+      const toggle = document.getElementById('passwordToggle');
+      if (!field || !toggle) return;
+      const isPassword = field.type === 'password';
+      field.type = isPassword ? 'text' : 'password';
+      toggle.textContent = isPassword ? 'Hide' : 'Show';
+    }
+
+    function startPasswordReset() {
+      if (typeof window.requestPasswordReset === 'function') {
+        window.requestPasswordReset();
+        return;
+      }
+      const email = document.getElementById('emailField').value.trim().toLowerCase();
+      if (!email || !validateEmail(email)) {
+        showAuthMessage('Enter your registered email to reset password.');
+        return;
+      }
+      const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+      const exists = users.find(user => user.email === email);
+      if (!exists) {
+        showAuthMessage('Email not found. Please register first.');
+        return;
+      }
+      const otp = String(Math.floor(100000 + Math.random() * 900000));
+      localStorage.setItem(RESET_KEY, otp);
+      localStorage.setItem(RESET_EMAIL_KEY, email);
+      openOtpModal('reset');
+      showOtpMessage(`Reset OTP sent to ${email}. Demo OTP: ${otp}`, 'success');
+    }
+
+    function toggleTheme() {
+      const current = document.body.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.body.setAttribute('data-theme', next);
+      localStorage.setItem(THEME_KEY, next);
+    }
+
+    function loadTheme() {
+      const saved = localStorage.getItem(THEME_KEY) || 'light';
+      document.body.setAttribute('data-theme', saved);
+    }
+
+    function getStats() {
+      const stats = JSON.parse(localStorage.getItem(STATS_KEY) || '{"attempts":0,"average":0,"best":0,"streak":0,"focusMinutes":0,"accuracy":0}');
+      return stats;
+    }
+
+    function setStats(stats) {
+      localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+      renderStats();
+    }
+
+    function renderStats() {
+      const { attempts, average, best, streak, focusMinutes, accuracy } = getStats();
+      document.getElementById('statAttempts').textContent = attempts;
+      document.getElementById('statAverage').textContent = average.toFixed(1);
+      document.getElementById('statBest').textContent = best;
+      document.getElementById('statStreak').textContent = `${streak} days`;
+      document.getElementById('statFocus').textContent = `${focusMinutes}`;
+      document.getElementById('statAccuracy').textContent = `${accuracy}%`;
+      const streakRate = `${Math.min(7, streak)}/7 days`;
+      document.getElementById('statStreakRate').textContent = streakRate;
+      const quick = document.getElementById('quickAttempts');
+      if (quick) {
+        quick.textContent = attempts;
+      }
+      const quickStreak = document.getElementById('quickStreak');
+      if (quickStreak) {
+        quickStreak.textContent = `${streak}d`;
+      }
+    }
+
+    function renderInsights() {
+      const { average, attempts } = getStats();
+      const structure = Math.min(92, Math.round(60 + average * 0.3));
+      const depth = Math.min(90, Math.round(55 + attempts * 2));
+      const data = Math.min(85, Math.round(50 + average * 0.25));
+      const speed = Math.min(92, Math.round(58 + attempts * 1.5));
+      updateBar('barStructure', 'barStructureFill', structure);
+      updateBar('barDepth', 'barDepthFill', depth);
+      updateBar('barData', 'barDataFill', data);
+      updateBar('barSpeed', 'barSpeedFill', speed);
+      updateEliteRank();
+    }
+
+    function updateBar(labelId, fillId, value) {
+      const label = document.getElementById(labelId);
+      const fill = document.getElementById(fillId);
+      if (label) {
+        label.textContent = `${value}%`;
+      }
+      if (fill) {
+        fill.style.width = `${value}%`;
+      }
+    }
+
+    function updateProfile() {
+      const user = JSON.parse(localStorage.getItem(window.USER_KEY) || '{}');
+      const name = user.name || 'Elite Aspirant';
+      const email = user.email || 'you@example.com';
+      const initial = name ? name.trim().charAt(0).toUpperCase() : 'U';
+      document.getElementById('profileName').textContent = name.split(' ')[0];
+      document.getElementById('profileEmail').textContent = email;
+      document.getElementById('profileInitial').textContent = initial;
+    }
+
+    function updateEliteRank() {
+      const { average, attempts } = getStats();
+      const score = Math.round(average + attempts * 3);
+      const ranks = [
+        { min: 0, label: 'Bronze Cadet', level: 'Level 1' },
+        { min: 60, label: 'Silver Strategist', level: 'Level 2' },
+        { min: 80, label: 'Gold Commander', level: 'Level 3' },
+        { min: 95, label: 'Platinum Ace', level: 'Level 4' }
+      ];
+      const current = ranks.slice().reverse().find(rank => score >= rank.min) || ranks[0];
+      document.getElementById('eliteRank').textContent = current.label;
+      document.getElementById('eliteScore').textContent = current.level;
+    }
+
+    function updateWeeklyScore() {
+      const score = Number(localStorage.getItem(SCORE_KEY) || 0);
+      document.getElementById('weeklyScore').textContent = `${score}/300 pts`;
+      const quickWeekly = document.getElementById('quickWeekly');
+      if (quickWeekly) {
+        quickWeekly.textContent = score;
+      }
+    }
+
+    function updateConnectorStatus() {
+      const endpoint = localStorage.getItem(API_ENDPOINT_KEY) || '';
+      const authBase = localStorage.getItem(window.AUTH_API_BASE_KEY) || '';
+      const statusEl = document.getElementById('connectorStatus');
+      const input = document.getElementById('apiEndpoint');
+      const authInput = document.getElementById('authEndpoint');
+      if (input) {
+        input.value = endpoint;
+      }
+      if (authInput) {
+        authInput.value = authBase;
+      }
+      if (statusEl) {
+        statusEl.textContent = endpoint ? 'Connected' : 'Disconnected';
+        statusEl.classList.toggle('badge', !endpoint);
+        statusEl.classList.toggle('bg-emerald-500', Boolean(endpoint));
+        statusEl.classList.toggle('text-white', Boolean(endpoint));
+      }
+    }
+
+    function saveEndpoint() {
+      const input = document.getElementById('apiEndpoint');
+      const authInput = document.getElementById('authEndpoint');
+      const value = input ? input.value.trim() : '';
+      const authValue = authInput ? authInput.value.trim() : '';
+      if (value) {
+        localStorage.setItem(API_ENDPOINT_KEY, value);
+      } else {
+        localStorage.removeItem(API_ENDPOINT_KEY);
+      }
+      if (authValue) {
+        localStorage.setItem(window.AUTH_API_BASE_KEY, authValue);
+      } else {
+        localStorage.removeItem(window.AUTH_API_BASE_KEY);
+      }
+      updateConnectorStatus();
+    }
+
+    let selectedPaper = 'GS1';
+    let selectedSubject = '';
+    let selectedMarks = 15;
+    let selectedQuestion = '';
+    let selectedDifficulty = 'Easy';
+    let selectedLanguage = 'English';
+    let uploadedAnswerText = '';
+    let uploadedAnswerFile = null;
+
+    function resetEvaluationFlow() {
+      selectedPaper = 'GS1';
+      selectedSubject = '';
+      selectedMarks = 15;
+      selectedQuestion = '';
+      selectedDifficulty = 'Easy';
+      selectedLanguage = 'English';
+      uploadedAnswerText = '';
+      uploadedAnswerFile = null;
+      const questionInput = document.getElementById('questionInput');
+      if (questionInput) {
+        questionInput.value = '';
+        questionInput.classList.remove('border-rose-500');
+      }
+      const answerFile = document.getElementById('answerFile');
+      if (answerFile) {
+        answerFile.value = '';
+      }
+      const dropzoneStatus = document.getElementById('dropzoneStatus');
+      if (dropzoneStatus) {
+        dropzoneStatus.textContent = 'Max 25 pages · PDF or image';
+      }
+      updateEvaluationSettings();
+    }
+
+    function openPaperSheet() {
+      const user = localStorage.getItem(window.USER_KEY);
+      if (!user) {
+        showAuth('login');
+        showAuthMessage('Please register first to evaluate answers.');
+        return;
+      }
+      const exam = document.getElementById('examMode');
+      if (exam) {
+        exam.classList.add('hidden');
+      }
+      resetEvaluationFlow();
+      openSheet('paperSheet');
+    }
+
+    function selectPaper(paper) {
+      selectedPaper = paper;
+      if (paper === 'Optional') {
+        openSheet('optionalSheet');
+      } else {
+        openSheet('marksSheet');
+      }
+    }
+
+    function selectSubject(subject) {
+      selectedSubject = subject;
+      openSheet('marksSheet');
+    }
+
+    function selectMarks(marks) {
+      selectedMarks = marks;
+      openSheet('difficultySheet');
+    }
+
+    function selectDifficulty(level) {
+      selectedDifficulty = level;
+      document.getElementById('difficultyEasy').classList.toggle('selected-option', level === 'Easy');
+      document.getElementById('difficultyHard').classList.toggle('selected-option', level === 'Hard');
+      updateEvaluationSettings();
+    }
+
+    function selectLanguage(language) {
+      selectedLanguage = language;
+      document.getElementById('languageEnglish').classList.toggle('selected-option', language === 'English');
+      document.getElementById('languageHindi').classList.toggle('selected-option', language === 'Hindi');
+      updateEvaluationSettings();
+    }
+
+    function saveDifficultyLanguage() {
+      openSheet('questionSheet');
+    }
+
+    function updateEvaluationSettings() {
+      const difficultyEl = document.getElementById('currentDifficulty');
+      const languageEl = document.getElementById('currentLanguage');
+      if (difficultyEl) difficultyEl.textContent = selectedDifficulty;
+      if (languageEl) languageEl.textContent = selectedLanguage;
+    }
+
+    function saveQuestion() {
+      const input = document.getElementById('questionInput');
+      const value = input ? input.value.trim() : '';
+      if (!value) {
+        if (input) {
+          input.classList.add('border-rose-500');
+        }
+        return;
+      }
+      input.classList.remove('border-rose-500');
+      selectedQuestion = value;
+      openSheet('uploadSheet');
+    }
+
+    function openSheet(id) {
+      const backdrop = document.getElementById('sheetBackdrop');
+      if (backdrop) {
+        backdrop.classList.remove('hidden');
+      }
+      const isOptional = selectedPaper === 'Optional';
+      const marksBtn = document.getElementById('marks20Btn');
+      const marksSubtitle = document.getElementById('marksSubtitle');
+      if (marksBtn) {
+        marksBtn.classList.toggle('hidden', !isOptional);
+      }
+      if (marksSubtitle) {
+        marksSubtitle.textContent = isOptional
+          ? 'Optional answers are typically 20 marks. Choose 10, 15, or 20.'
+          : 'GS answers are typically 10 or 15 marks. Choose below.';
+      }
+      ['paperSheet','optionalSheet','marksSheet','difficultySheet','questionSheet','uploadSheet'].forEach(sheetId => {
+        const sheet = document.getElementById(sheetId);
+        if (!sheet) return;
+        if (sheetId === id) {
+          sheet.classList.remove('hidden');
+          requestAnimationFrame(() => sheet.classList.add('open'));
+        } else {
+          sheet.classList.remove('open');
+          sheet.classList.add('hidden');
+        }
+      });
+      const panel = document.getElementById('analysisPanel');
+      if (panel) {
+        panel.classList.add('hidden');
+      }
+    }
+
+    function closeSheets() {
+      const backdrop = document.getElementById('sheetBackdrop');
+      if (backdrop) {
+        backdrop.classList.add('hidden');
+      }
+      document.querySelectorAll('.sheet').forEach(sheet => {
+        sheet.classList.remove('open');
+        sheet.classList.add('hidden');
+      });
+      const menu = document.getElementById('profileMenu');
+      if (menu) {
+        menu.classList.add('hidden');
+      }
+    }
+
+    let timerInterval;
+    let timerPaused = false;
+    let examDurationMinutes = 45;
+    let remainingSeconds = 45 * 60;
+
+    function openExamMode() {
+      closeSheets();
+      const title = selectedPaper === 'Optional' ? `Optional - ${selectedSubject || 'Subject'}` : selectedPaper;
+      document.getElementById('examTitle').textContent = `Paper: ${title} · ${selectedMarks} Marks`;
+      document.getElementById('examMeta').textContent = `${selectedDifficulty} · ${selectedLanguage}`;
+      examDurationMinutes = selectedMarks === 20 ? 20 : (selectedMarks === 15 ? 15 : 10);
+      const exam = document.getElementById('examMode');
+      if (exam) {
+        exam.classList.remove('hidden');
+      }
+      document.getElementById('answerInput').focus();
+      loadDraft();
+      startTimer();
+    }
+
+    function exitExamMode() {
+      const exam = document.getElementById('examMode');
+      if (exam) {
+        exam.classList.add('hidden');
+      }
+      stopTimer();
+    }
+
+    function updateWordCount() {
+      const input = document.getElementById('answerInput');
+      const counter = document.getElementById('wordCount');
+      if (!input || !counter) {
+        return;
+      }
+      const text = input.value.trim();
+      const count = text ? text.split(/\s+/).length : 0;
+      counter.textContent = count;
+      saveDraft();
+    }
+
+    function updateBreakdown(idPrefix, value) {
+      const label = document.getElementById(`${idPrefix}`);
+      const fill = document.getElementById(`${idPrefix}Fill`);
+      if (label) label.textContent = `${value}%`;
+      if (fill) fill.style.width = `${value}%`;
+    }
+
+    async function analyze() {
+      document.getElementById('analysisPanel').classList.remove('hidden');
+      document.getElementById('loadingSkeleton').classList.remove('hidden');
+      document.getElementById('resultContainer').classList.add('hidden');
+
+      const typedAnswer = document.getElementById('answerInput').value.trim();
+      const answer = uploadedAnswerText || typedAnswer;
+      if (!answer) {
+        document.getElementById('loadingSkeleton').classList.add('hidden');
+        document.getElementById('resultContainer').classList.remove('hidden');
+        document.getElementById('resultSummary').textContent = 'Please add your answer before running evaluation.';
+        document.getElementById('score').textContent = '0';
+        document.getElementById('scoreMax').textContent = selectedMarks;
+        document.getElementById('resultStatus').textContent = 'Awaiting answer input.';
+        return;
+      }
+      const endpoint = localStorage.getItem(API_ENDPOINT_KEY) || '';
+      let maxMarks = selectedMarks;
+      let score = Math.round(maxMarks * (0.6 + Math.random() * 0.25));
+      let summary = 'Your answer shows strong structure and clarity. Add more examples, recent data points, and a sharper conclusion to reach 80+.';
+      let strengths = ['Clear introduction', 'Balanced viewpoints'];
+      let weaknesses = ['Needs more data points', 'Conclusion can be sharper'];
+      let missing = ['Interlink with SDG targets', 'Recent committee report'];
+      let suggestions = ['Use 2 micro case studies', 'End with reform roadmap'];
+      let modelAnswer = 'A model answer covers cooperative federalism through institutional mechanisms (GST Council, ISC), fiscal transfers, and joint policy design, concluding with reform needs for fiscal autonomy.';
+      let diagramFeedback = 'No diagram detected. Add a simple flowchart or map for value addition.';
+      let breakdown = {
+        understanding: Math.round(60 + Math.random() * 25),
+        content: Math.round(55 + Math.random() * 30),
+        structure: Math.round(58 + Math.random() * 28),
+        analysis: Math.round(52 + Math.random() * 28),
+        language: Math.round(60 + Math.random() * 25),
+        value: Math.round(50 + Math.random() * 30)
+      };
+      let usedLive = false;
+
+      if (endpoint) {
+        try {
+          let body;
+          let headers = {};
+          if (uploadedAnswerFile) {
+            const formData = new FormData();
+            formData.append('file', uploadedAnswerFile);
+            formData.append('question', selectedQuestion);
+            formData.append('paper', selectedPaper);
+            formData.append('subject', selectedSubject);
+            formData.append('marks', String(selectedMarks));
+            formData.append('difficulty', selectedDifficulty);
+            formData.append('language', selectedLanguage);
+            body = formData;
+          } else {
+            headers = { 'Content-Type': 'application/json' };
+            body = JSON.stringify({
+              answer,
+              question: selectedQuestion,
+              paper: selectedPaper,
+              subject: selectedSubject,
+              marks: selectedMarks,
+              difficulty: selectedDifficulty,
+              language: selectedLanguage
+            });
+          }
+          const response = await fetch(endpoint, {
+            method: 'POST',
+            headers,
+            body
+          });
+          if (response.ok) {
+            const data = await response.json();
+            score = typeof data.score === 'number' ? data.score : score;
+            maxMarks = data.maxMarks || data.marks || maxMarks;
+            summary = data.summary || summary;
+            strengths = Array.isArray(data.strengths) ? data.strengths : strengths;
+            weaknesses = Array.isArray(data.weaknesses) ? data.weaknesses : weaknesses;
+            missing = Array.isArray(data.missingDimensions) ? data.missingDimensions : missing;
+            suggestions = Array.isArray(data.topperSuggestions) ? data.topperSuggestions : suggestions;
+            modelAnswer = data.modelAnswer || modelAnswer;
+            diagramFeedback = data.diagramFeedback || diagramFeedback;
+            if (data.breakdown) {
+              breakdown = {
+                understanding: data.breakdown.understanding ?? breakdown.understanding,
+                content: data.breakdown.content ?? breakdown.content,
+                structure: data.breakdown.structure ?? breakdown.structure,
+                analysis: data.breakdown.analysis ?? breakdown.analysis,
+                language: data.breakdown.language ?? breakdown.language,
+                value: data.breakdown.valueAddition ?? breakdown.value
+              };
+            }
+            usedLive = true;
+          }
+        } catch (error) {
+          usedLive = false;
+        }
+      }
+
+      const normalizedScore = Math.round((score / maxMarks) * 100);
+      const stats = getStats();
+      stats.attempts += 1;
+      stats.best = Math.max(stats.best, normalizedScore);
+      stats.average = ((stats.average * (stats.attempts - 1)) + normalizedScore) / stats.attempts;
+      stats.streak += 1;
+      stats.focusMinutes += examDurationMinutes;
+      stats.accuracy = Math.min(100, Math.round(stats.average));
+      setStats(stats);
+      renderInsights();
+      addWeeklyScore(normalizedScore);
+      addEvaluationHistory({
+        date: new Date().toLocaleDateString(),
+        paper: selectedPaper === 'Optional' ? `${selectedPaper} (${selectedSubject})` : selectedPaper,
+        score: `${score}/${maxMarks}`,
+        difficulty: selectedDifficulty,
+        language: selectedLanguage
+      });
+
+      document.getElementById('loadingSkeleton').classList.add('hidden');
+      document.getElementById('resultContainer').classList.remove('hidden');
+      document.getElementById('score').textContent = score;
+      document.getElementById('scoreMax').textContent = maxMarks;
+      document.getElementById('resultSummary').textContent = summary;
+      document.getElementById('resultStrengths').innerHTML = strengths.map(item => `<li>${item}</li>`).join('');
+      document.getElementById('resultWeaknesses').innerHTML = weaknesses.map(item => `<li>${item}</li>`).join('');
+      document.getElementById('resultMissing').innerHTML = missing.map(item => `<li>${item}</li>`).join('');
+      document.getElementById('resultSuggestions').innerHTML = suggestions.map(item => `<li>${item}</li>`).join('');
+      document.getElementById('resultModel').textContent = modelAnswer;
+      document.getElementById('resultDiagram').textContent = diagramFeedback;
+      document.getElementById('resultMeta').textContent = `${selectedDifficulty} · ${selectedLanguage} · ${selectedPaper}`;
+      updateBreakdown('breakUnderstanding', breakdown.understanding);
+      updateBreakdown('breakContent', breakdown.content);
+      updateBreakdown('breakStructure', breakdown.structure);
+      updateBreakdown('breakAnalysis', breakdown.analysis);
+      updateBreakdown('breakLanguage', breakdown.language);
+      updateBreakdown('breakValue', breakdown.value);
+      document.getElementById('resultStatus').textContent = usedLive ? 'Live API used for scoring.' : (endpoint ? 'API unavailable. Showing default insights.' : 'Simulated insights. Connect API for real scoring.');
+      renderEvaluationHistory();
+    }
+
+    function closeAnalysis() {
+      const panel = document.getElementById('analysisPanel');
+      if (panel) {
+        panel.classList.add('hidden');
+      }
+      const input = document.getElementById('answerInput');
+      if (input) {
+        input.value = '';
+      }
+      uploadedAnswerText = '';
+      uploadedAnswerFile = null;
+      const status = document.getElementById('dropzoneStatus');
+      if (status) {
+        status.textContent = 'Max 25 pages · PDF or image';
+      }
+      updateWordCount();
+      clearDraft();
+      exitExamMode();
+      closeSheets();
+      resetEvaluationFlow();
+    }
+
+    function addWeeklyScore(score) {
+      const current = Number(localStorage.getItem(SCORE_KEY) || 0);
+      const updated = Math.min(300, current + Math.round(score * 0.4));
+      localStorage.setItem(SCORE_KEY, String(updated));
+      updateWeeklyScore();
+    }
+
+    function addEvaluationHistory(entry) {
+      const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+      history.unshift(entry);
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 6)));
+    }
+
+    function renderEvaluationHistory() {
+      const container = document.getElementById('evaluationHistory');
+      if (!container) return;
+      const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+      if (!history.length) {
+        container.innerHTML = '<p class="text-sm text-slate-500">No evaluations yet. Start your first answer today.</p>';
+        return;
+      }
+      container.innerHTML = history.map(item => `
+        <div class="flex items-center justify-between text-sm">
+          <span>${item.paper} · ${item.score}</span>
+          <span class="text-xs text-slate-400">${item.date}</span>
+        </div>
+      `).join('');
+    }
+
+    function updateTimerDisplay() {
+      const minutes = String(Math.floor(remainingSeconds / 60)).padStart(2, '0');
+      const seconds = String(remainingSeconds % 60).padStart(2, '0');
+      document.getElementById('timerDisplay').textContent = `${minutes}:${seconds}`;
+    }
+
+    function startTimer() {
+      remainingSeconds = examDurationMinutes * 60;
+      timerPaused = false;
+      document.getElementById('timerToggle').textContent = 'Pause';
+      updateTimerDisplay();
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (!timerPaused) {
+          remainingSeconds = Math.max(0, remainingSeconds - 1);
+          updateTimerDisplay();
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+    }
+
+    function toggleTimer() {
+      timerPaused = !timerPaused;
+      document.getElementById('timerToggle').textContent = timerPaused ? 'Resume' : 'Pause';
+    }
+
+    function saveDraft() {
+      const input = document.getElementById('answerInput');
+      const status = document.getElementById('draftStatus');
+      if (!input || !status) {
+        return;
+      }
+      const text = input.value;
+      localStorage.setItem(DRAFT_KEY, text);
+      status.textContent = text ? 'Draft saved' : 'Draft not saved';
+    }
+
+    function loadDraft() {
+      const input = document.getElementById('answerInput');
+      const status = document.getElementById('draftStatus');
+      if (!input || !status) {
+        return;
+      }
+      const draft = localStorage.getItem(DRAFT_KEY) || '';
+      if (draft) {
+        input.value = draft;
+        updateWordCount();
+        status.textContent = 'Draft restored';
+      }
+    }
+
+    function clearDraft() {
+      const status = document.getElementById('draftStatus');
+      localStorage.removeItem(DRAFT_KEY);
+      if (status) {
+        status.textContent = 'Draft cleared';
+      }
+    }
+
+    function getPlanItems() {
+      const defaults = [
+        { id: 'gs-answer', task: 'Write 1 GS answer (150 words)', time: '12 minutes' },
+        { id: 'ca-brief', task: 'Revise 2 current affairs briefs', time: '20 minutes' },
+        { id: 'data-points', task: 'Highlight 3 data points for GS2', time: '15 minutes' }
+      ];
+      const saved = JSON.parse(localStorage.getItem(PLAN_ITEMS_KEY) || 'null');
+      if (!saved || !Array.isArray(saved) || !saved.length) {
+        localStorage.setItem(PLAN_ITEMS_KEY, JSON.stringify(defaults));
+        return defaults;
+      }
+      return saved;
+    }
+
+    function savePlanItems(items) {
+      localStorage.setItem(PLAN_ITEMS_KEY, JSON.stringify(items));
+    }
+
+    function renderPlan() {
+      const planList = document.getElementById('planList');
+      if (!planList) return;
+      const planState = JSON.parse(localStorage.getItem(PLAN_KEY) || '{}');
+      const items = getPlanItems();
+      planList.innerHTML = items.map(item => {
+        return `
+          <div class="flex items-center justify-between p-4 rounded-xl border" style="border-color: var(--border);">
+            <label class="flex items-center gap-3 flex-1">
+              <input data-plan-id="${item.id}" type="checkbox" class="h-5 w-5" ${planState[item.id] ? 'checked' : ''} />
+              <span>
+                <p class="font-medium">${item.task}</p>
+                <p class="text-sm text-slate-500">Target: ${item.time}</p>
+              </span>
+            </label>
+            <div class="flex items-center gap-2">
+              <button class="edit-plan px-3 py-1 text-xs rounded-full border" style="border-color: var(--border);" data-plan-edit="${item.id}">Edit</button>
+              <button class="delete-plan px-3 py-1 text-xs rounded-full border text-rose-500" style="border-color: var(--border);" data-plan-delete="${item.id}">Remove</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      planList.querySelectorAll('[data-plan-id]').forEach(box => {
+        const id = box.getAttribute('data-plan-id');
+        box.addEventListener('change', () => {
+          planState[id] = box.checked;
+          localStorage.setItem(PLAN_KEY, JSON.stringify(planState));
+          updateTargets();
+        });
+      });
+
+      planList.querySelectorAll('[data-plan-edit]').forEach(button => {
+        button.addEventListener('click', () => openPlanModal(button.dataset.planEdit));
+      });
+
+      planList.querySelectorAll('[data-plan-delete]').forEach(button => {
+        button.addEventListener('click', () => deletePlanItem(button.dataset.planDelete));
+      });
+
+      updateTargets();
+    }
+
+    function openPlanModal(id) {
+      const items = getPlanItems();
+      const item = items.find(entry => entry.id === id);
+      document.getElementById('planModal').classList.remove('hidden');
+      document.getElementById('planModal').dataset.mode = id ? 'edit' : 'add';
+      document.getElementById('planModal').dataset.planId = id || '';
+      document.getElementById('planModalTitle').textContent = id ? 'Edit Plan Task' : 'Add Plan Task';
+      document.getElementById('planTaskModalInput').value = item ? item.task : '';
+      document.getElementById('planTimeModalInput').value = item ? item.time : '';
+      document.getElementById('planModalMessage').classList.add('hidden');
+    }
+
+    function closePlanModal() {
+      document.getElementById('planModal').classList.add('hidden');
+    }
+
+    function savePlanModal() {
+      const task = document.getElementById('planTaskModalInput').value.trim();
+      const time = document.getElementById('planTimeModalInput').value.trim();
+      const message = document.getElementById('planModalMessage');
+      if (!task || !time) {
+        message.textContent = 'Please enter task and target time.';
+        message.classList.remove('hidden');
+        return;
+      }
+      const items = getPlanItems();
+      const mode = document.getElementById('planModal').dataset.mode;
+      if (mode === 'edit') {
+        const id = document.getElementById('planModal').dataset.planId;
+        const index = items.findIndex(entry => entry.id === id);
+        if (index >= 0) {
+          items[index].task = task;
+          items[index].time = time;
+        }
+      } else {
+        const id = `plan-${Date.now()}`;
+        items.push({ id, task, time });
+      }
+      savePlanItems(items);
+      closePlanModal();
+      renderPlan();
+    }
+
+    function deletePlanItem(id) {
+      const items = getPlanItems().filter(item => item.id !== id);
+      savePlanItems(items);
+      const planState = JSON.parse(localStorage.getItem(PLAN_KEY) || '{}');
+      delete planState[id];
+      localStorage.setItem(PLAN_KEY, JSON.stringify(planState));
+      renderPlan();
+    }
+
+    function loadPlan() {
+      renderPlan();
+      const taskInput = document.getElementById('planTaskInput');
+      const timeInput = document.getElementById('planTimeInput');
+      const addBtn = document.getElementById('addPlanBtn');
+      if (taskInput && timeInput && addBtn) {
+        addBtn.addEventListener('click', () => {
+          if (!taskInput.value.trim() || !timeInput.value.trim()) {
+            openPlanModal('');
+            return;
+          }
+          const items = getPlanItems();
+          const id = `plan-${Date.now()}`;
+          items.push({ id, task: taskInput.value.trim(), time: timeInput.value.trim() });
+          savePlanItems(items);
+          taskInput.value = '';
+          timeInput.value = '';
+          renderPlan();
+        });
+      }
+    }
+
+    function updateTargets() {
+      const planState = JSON.parse(localStorage.getItem(PLAN_KEY) || '{}');
+      const items = getPlanItems();
+      const total = items.length;
+      const completed = items.filter(item => planState[item.id]).length;
+      document.getElementById('statTargets').textContent = `${completed}/${total}`;
+    }
+
+    function toggleFocusMode() {
+      document.body.classList.toggle('no-copy');
+      const toggle = document.getElementById('focusToggle');
+      toggle.textContent = document.body.classList.contains('no-copy') ? 'Focus Mode On' : 'Focus Mode';
+    }
+
+    function loadHabits() {
+      const habits = JSON.parse(localStorage.getItem(HABIT_KEY) || '{"news":false,"mcq":false}');
+      document.querySelectorAll('[data-habit]').forEach(box => {
+        const id = box.getAttribute('data-habit');
+        box.checked = Boolean(habits[id]);
+        box.addEventListener('change', () => {
+          habits[id] = box.checked;
+          localStorage.setItem(HABIT_KEY, JSON.stringify(habits));
+        });
+      });
+    }
+
+    function getTodayKey() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    function updateMcqLimit(increment = 0) {
+      const record = JSON.parse(localStorage.getItem(MCQ_KEY) || '{}');
+      const today = getTodayKey();
+      if (record.date !== today) {
+        record.date = today;
+        record.count = 0;
+      }
+      record.count = Math.min(10, record.count + increment);
+      localStorage.setItem(MCQ_KEY, JSON.stringify(record));
+      const countEl = document.getElementById('mcqCount');
+      const limitEl = document.getElementById('mcqLimitText');
+      if (countEl) countEl.textContent = record.count;
+      if (limitEl) limitEl.textContent = `${record.count}/10 MCQs`;
+    }
+
+    function setupEventBindings() {
+      const bind = (id, eventName, handler) => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener(eventName, handler);
+        }
+      };
+
+      bind('themeToggle', 'click', toggleTheme);
+      bind('focusToggle', 'click', toggleFocusMode);
+      bind('startEvaluation', 'click', openPaperSheet);
+      bind('mobileQuickEval', 'click', openPaperSheet);
+      bind('mainsEvaluateBtn', 'click', openPaperSheet);
+      bind('dailyFlowEval', 'click', openPaperSheet);
+      bind('logoutBtn', 'click', () => {
+        if (typeof window.logout === 'function') {
+          window.logout();
+        } else {
+          logoutLocal();
+        }
+      });
+      bind('editProfileBtn', 'click', openProfileModal);
+      bind('saveProfileBtn', 'click', saveProfile);
+      bind('verifyOtpBtn', 'click', () => (window.verifyOtp ? window.verifyOtp() : verifyOtp()));
+      bind('passwordToggle', 'click', togglePasswordVisibility);
+      bind('resendOtpBtn', 'click', () => (window.resendOtp ? window.resendOtp() : resendOtp()));
+      bind('forgotPasswordBtn', 'click', startPasswordReset);
+      bind('openOtpBtn', 'click', () => (window.openOtpFromLogin ? window.openOtpFromLogin('register') : openOtpModal('register')));
+      bind('timerToggle', 'click', toggleTimer);
+      bind('saveEndpoint', 'click', saveEndpoint);
+      bind('planModalSave', 'click', savePlanModal);
+      bind('dailyPrelimsBtn', 'click', () => updateMcqLimit(1));
+      bind('mcqAttemptBtn', 'click', () => updateMcqLimit(3));
+
+      const otpModal = document.getElementById('otpModal');
+      if (otpModal) {
+        otpModal.addEventListener('click', (event) => {
+          if (event.target.id === 'otpModal') {
+            closeOtpModal();
+          }
+        });
+      }
+
+      const profileBtn = document.getElementById('profileBtn');
+      if (profileBtn) {
+        profileBtn.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const menu = document.getElementById('profileMenu');
+          if (menu) {
+            menu.classList.toggle('hidden');
+          }
+        });
+      }
+
+      document.addEventListener('click', (event) => {
+        const menu = document.getElementById('profileMenu');
+        const profileButton = document.getElementById('profileBtn');
+        if (menu && profileButton && !menu.contains(event.target) && !profileButton.contains(event.target)) {
+          menu.classList.add('hidden');
+        }
+      });
+
+      const answerInput = document.getElementById('answerInput');
+      if (answerInput) {
+        answerInput.addEventListener('input', updateWordCount);
+        answerInput.addEventListener('paste', (e) => e.preventDefault());
+        answerInput.addEventListener('copy', (e) => e.preventDefault());
+      }
+
+      bind('analyzeBtn', 'click', analyze);
+
+      const sheetBackdrop = document.getElementById('sheetBackdrop');
+      if (sheetBackdrop) {
+        sheetBackdrop.addEventListener('click', closeSheets);
+      }
+
+      document.querySelectorAll('.sheet-close').forEach(button => {
+        button.addEventListener('click', closeSheets);
+      });
+      document.querySelectorAll('.analysis-close').forEach(button => {
+        button.addEventListener('click', closeAnalysis);
+      });
+
+      bind('addPlanBtn', 'click', () => openPlanModal(''));
+
+      const dropzone = document.getElementById('dropzone');
+      const answerFile = document.getElementById('answerFile');
+      const dropzoneStatus = document.getElementById('dropzoneStatus');
+      const uploadAnalyzeBtn = document.getElementById('uploadAnalyzeBtn');
+      if (dropzone && answerFile && dropzoneStatus && uploadAnalyzeBtn) {
+        const updateFileStatus = (file) => {
+          if (!file) {
+            dropzoneStatus.textContent = 'Max 25 pages · PDF or image';
+            return;
+          }
+          const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+          dropzoneStatus.textContent = `${file.name} · ${sizeMb}MB`;
+        };
+
+        const handleFile = (file) => {
+          if (!file) return;
+          if (file.size > 10 * 1024 * 1024) {
+            dropzoneStatus.textContent = 'File too large. Max 10MB.';
+            uploadedAnswerFile = null;
+            return;
+          }
+          uploadedAnswerFile = file;
+          uploadedAnswerText = '';
+          updateFileStatus(file);
+        };
+
+        dropzone.addEventListener('dragover', (event) => {
+          event.preventDefault();
+          dropzone.classList.add('bg-indigo-50');
+        });
+        dropzone.addEventListener('dragleave', () => {
+          dropzone.classList.remove('bg-indigo-50');
+        });
+        dropzone.addEventListener('drop', (event) => {
+          event.preventDefault();
+          dropzone.classList.remove('bg-indigo-50');
+          const file = event.dataTransfer.files[0];
+          handleFile(file);
+        });
+        answerFile.addEventListener('change', (event) => {
+          const file = event.target.files[0];
+          handleFile(file);
+        });
+        uploadAnalyzeBtn.addEventListener('click', () => {
+          if (!uploadedAnswerFile) {
+            dropzoneStatus.textContent = 'Please upload a file first.';
+            return;
+          }
+          analyze();
+        });
+      }
+
+      const planModal = document.getElementById('planModal');
+      if (planModal) {
+        planModal.addEventListener('click', (event) => {
+          if (event.target.id === 'planModal') {
+            closePlanModal();
+          }
+        });
+      }
+
+      const profileModal = document.getElementById('profileModal');
+      if (profileModal) {
+        profileModal.addEventListener('click', (event) => {
+          if (event.target.id === 'profileModal') {
+            closeProfileModal();
+          }
+        });
+      }
+
+      document.querySelectorAll('.tab-btn').forEach(button => {
+        button.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          const target = button.dataset.tab;
+          document.querySelectorAll('.tab-panel').forEach(panel => {
+            panel.classList.toggle('hidden', panel.id !== target);
+          });
+        });
+      });
+
+      document.querySelectorAll('button').forEach(btn => {
+        if (btn.textContent.trim() === 'Close') {
+          btn.addEventListener('click', () => {
+            if (btn.closest('#profileModal')) {
+              closeProfileModal();
+              return;
+            }
+            if (btn.closest('#otpModal')) {
+              closeOtpModal();
+              return;
+            }
+            if (btn.closest('#planModal')) {
+              closePlanModal();
+              return;
+            }
+            if (btn.closest('#analysisPanel')) {
+              closeAnalysis();
+              return;
+            }
+            if (btn.closest('.sheet')) {
+              closeSheets();
+            }
+          });
+        }
+      });
+
+      const analysisPanel = document.getElementById('analysisPanel');
+      if (analysisPanel) {
+        analysisPanel.addEventListener('click', (event) => {
+          if (event.target.id === 'analysisPanel') {
+            closeAnalysis();
+          }
+        });
+      }
+    }
+
+    window.addEventListener('error', () => {
+      showAuthMessage('App loaded with some issues. Please refresh and try again.', 'error');
+    });
+
+    function safeInit() {
+      try {
+        const desiredAuthBase = `http://${location.hostname}:8000/api/v1`;
+        const storedAuthBase = localStorage.getItem(window.AUTH_API_BASE_KEY || 'UPSC_AUTH_BASE') || '';
+        const invalidAuthBase = !storedAuthBase
+          || storedAuthBase.includes(':8001')
+          || storedAuthBase.includes('<')
+          || storedAuthBase.toLowerCase().includes('your_backend_ip');
+        if (invalidAuthBase) {
+          localStorage.setItem(window.AUTH_API_BASE_KEY || 'UPSC_AUTH_BASE', desiredAuthBase);
+        }
+        loadTheme();
+        initAuth();
+        setupEventBindings();
+        const isAuthed = protectPage();
+        if (isAuthed) {
+          renderStats();
+          renderInsights();
+          updateWordCount();
+          loadPlan();
+          updateProfile();
+          updateWeeklyScore();
+          renderEvaluationHistory();
+          loadHabits();
+          updateMcqLimit();
+          updateEvaluationSettings();
+        }
+      } catch (error) {
+        console.error(error);
+        document.body.innerHTML = `
+          <div class="min-h-screen flex items-center justify-center bg-slate-900 text-white p-6">
+            <div class="max-w-lg text-center space-y-4">
+              <h1 class="text-2xl font-semibold">UPSC Evaluator Elite</h1>
+              <p class="text-slate-300">We ran into an initialization issue. Please refresh or clear site data.</p>
+              <button onclick="location.reload()" class="px-6 py-2 rounded-full bg-indigo-500">Reload</button>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', safeInit);
+  </script>
+  <script src="./js/app.js" defer></script>
+
+
+</body>
+</html>      

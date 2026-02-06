@@ -1,0 +1,14 @@
+from __future__ import annotations
+
+from passlib.context import CryptContext
+
+# Use PBKDF2 (stable, no bcrypt 72-byte issues)
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+
+
+def get_password_hash(password: str) -> str:
+    return pwd_context.hash(password)
+
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
