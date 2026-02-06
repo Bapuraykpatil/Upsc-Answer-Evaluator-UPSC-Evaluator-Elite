@@ -72,6 +72,10 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: str = ""
     SMTP_FROM: str = "UPSC Evaluator <no-reply@example.com>"
 
+    # --- SendGrid (recommended for production email) ---
+    SENDGRID_API_KEY: str = ""
+    SENDGRID_FROM: str = ""
+
     @property
     def sqlalchemy_database_uri(self) -> str:
         """
