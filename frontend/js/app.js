@@ -2918,6 +2918,10 @@ function getAuthBase() {
 
   const storedRaw = localStorage.getItem(AUTH_API_BASE_KEY);
   const stored = normalize(storedRaw);
+  if (stored && /trycloudflare\.com/i.test(stored)) {
+    localStorage.setItem(AUTH_API_BASE_KEY, DEFAULT_AUTH_BASE);
+    return DEFAULT_AUTH_BASE;
+  }
   if (stored && stored.includes(":8001")) {
     const fixed = stored.replace(":8001", ":8000");
     localStorage.setItem(AUTH_API_BASE_KEY, fixed);
