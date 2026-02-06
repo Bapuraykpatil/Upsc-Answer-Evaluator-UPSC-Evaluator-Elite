@@ -2896,7 +2896,7 @@ window.AUTH_API_BASE_KEY = AUTH_API_BASE_KEY;
   //   ? "http://127.0.0.1:8000/api/v1"
   //   : `http://${window.location.hostname}:8000/api/v1`;
   //const DEFAULT_AUTH_BASE = "https://arena-pac-spreading-tom.trycloudflare.com/api/v1";
-  const DEFAULT_AUTH_BASE = "https://YOUR-RENDER-APP.onrender.com/api/v1";
+  const DEFAULT_AUTH_BASE = "https://upsc-answer-evaluator-upsc-evaluator.onrender.com/api/v1";
 
 
 // LAN / production
