@@ -2955,12 +2955,16 @@
 
     function safeInit() {
       try {
-        const desiredAuthBase = `http://${location.hostname}:8000/api/v1`;
+        const desiredAuthBase = 'https://upsc-answer-evaluator-upsc-evaluator.onrender.com/api/v1';
         const storedAuthBase = localStorage.getItem(window.AUTH_API_BASE_KEY || 'UPSC_AUTH_BASE') || '';
         const invalidAuthBase = !storedAuthBase
           || storedAuthBase.includes(':8001')
           || storedAuthBase.includes('<')
-          || storedAuthBase.toLowerCase().includes('your_backend_ip');
+          || storedAuthBase.toLowerCase().includes('your_backend_ip')
+          || storedAuthBase.toLowerCase().includes('trycloudflare.com')
+          || storedAuthBase.toLowerCase().includes('localhost')
+          || storedAuthBase.toLowerCase().includes('127.0.0.1')
+          || /:\s*8000\b/.test(storedAuthBase);
         if (invalidAuthBase) {
           localStorage.setItem(window.AUTH_API_BASE_KEY || 'UPSC_AUTH_BASE', desiredAuthBase);
         }
