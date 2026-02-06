@@ -1,4 +1,10 @@
 // // // // // // // // // // frontend/js/app.js
+;(function () {
+  if (window.__UPSC_APP_LOADED__) {
+    console.warn("UPSC app.js already loaded; skipping duplicate load.");
+    return;
+  }
+  window.__UPSC_APP_LOADED__ = true;
 // // // // // // // // // // FastAPI integration for: AUTH (REAL OTP) + EVALUATION
 
 // // // // // // // // // const FASTAPI_BASE = `http://${location.hostname}:8000/api/v1`;
@@ -3344,3 +3350,4 @@ window.openOtpFromLogin = (context = "register") => {
 };
 
 console.log("✅ FastAPI auth + real OTP loaded");
+})();
