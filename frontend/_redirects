@@ -1,4 +1,4 @@
 /otp.html   /otp.html   200
-/index2     /index2.html 200
-/index2/    /index2.html 200
+/index2     /          301
+/index2/    /          301
 /*          /index2.html 200
