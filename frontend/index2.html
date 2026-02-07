@@ -200,7 +200,7 @@
       width: 100%;
       max-width: 900px;
       margin: 0 auto;
-      padding: 16px 18px;
+      padding: 18px 20px;
       border-radius: 20px;
       border: 1px solid rgba(148, 163, 184, 0.16);
       background: linear-gradient(135deg, rgba(79, 70, 229, 0.18), rgba(15, 23, 42, 0.5));
@@ -224,13 +224,16 @@
       flex-direction: column;
       gap: 6px;
       min-width: 0;
+      flex: 1;
     }
     .header-title {
-      font-size: 0.72rem;
-      letter-spacing: 0.32em;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
       text-transform: uppercase;
       color: var(--muted);
       font-weight: 600;
+      white-space: normal;
+      word-break: break-word;
     }
     .header-main {
       font-size: clamp(1.2rem, 2.2vw, 1.7rem);
@@ -255,8 +258,9 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: nowrap;
+      flex-shrink: 0;
     }
     .header-action {
       height: 42px;
@@ -295,9 +299,9 @@
         gap: 8px;
       }
       .header-action {
-        height: 38px;
-        padding: 0 12px;
-        font-size: 0.82rem;
+        height: 36px;
+        padding: 0 10px;
+        font-size: 0.78rem;
       }
       .header-meta {
         font-size: 0.78rem;
@@ -306,6 +310,10 @@
       .header-quote-top {
         font-size: 1rem;
         max-width: 100%;
+      }
+      .header-title {
+        font-size: 0.66rem;
+        letter-spacing: 0.28em;
       }
     }
     .quote-line.block-quote {
