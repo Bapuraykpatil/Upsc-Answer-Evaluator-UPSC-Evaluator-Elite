@@ -3049,6 +3049,8 @@
     });
 
     function safeInit() {
+      if (window.__UPSC_BOOTED__) return;
+      window.__UPSC_BOOTED__ = true;
       try {
         const desiredAuthBase = 'https://upsc-answer-evaluator-upsc-evaluator.onrender.com/api/v1';
         const storedAuthBase = localStorage.getItem(window.AUTH_API_BASE_KEY || 'UPSC_AUTH_BASE') || '';
