@@ -2042,13 +2042,16 @@
         { min: 95, label: 'Platinum Ace', level: 'Level 4' }
       ];
       const current = ranks.slice().reverse().find(rank => score >= rank.min) || ranks[0];
-      document.getElementById('eliteRank').textContent = current.label;
-      document.getElementById('eliteScore').textContent = current.level;
+      const eliteRankEl = document.getElementById('eliteRank');
+      if (eliteRankEl) eliteRankEl.textContent = current.label;
+      const eliteScoreEl = document.getElementById('eliteScore');
+      if (eliteScoreEl) eliteScoreEl.textContent = current.level;
     }
 
     function updateWeeklyScore() {
       const score = Number(localStorage.getItem(SCORE_KEY) || 0);
-      document.getElementById('weeklyScore').textContent = `${score}/300 pts`;
+      const weeklyScoreEl = document.getElementById('weeklyScore');
+      if (weeklyScoreEl) weeklyScoreEl.textContent = `${score}/300 pts`;
       const quickWeekly = document.getElementById('quickWeekly');
       if (quickWeekly) {
         quickWeekly.textContent = score;
